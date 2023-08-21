@@ -211,7 +211,7 @@ ax_solar.imshow(solar_image)
 ax_solar.axis('off')  # Turn off axis
 
 # Customize plot appearance
-terrestrial_image_path = 'terrestrial.webp'
+terrestrial_image_path = 'terrestrial.webp' # from https://feeds-drcn.cloud.huawei.com.cn/landingpage/latest?docid=10511888a45c34e40f777ed1668916e2d71ff64&to_app=hwbrowser&dy_scenario=relate&tn=c595bf8d270f0a4be922607ae09a8eb73fb778c5a4bd6f9631850a84270f2a97&channel=-1&ctype=news&appid=hwbrowser&cpid=666&r=CN&ifl=zh_CN&sdkVersion=&emuiver=#/
 terrestrial_image = mpimg.imread(terrestrial_image_path)
 
 # Add an Axes (subplot) to the figure at a specific position and with specific size
