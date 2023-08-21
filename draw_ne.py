@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import matplotlib.patches as patches
 import numpy as np
 from scipy.interpolate import PchipInterpolator
@@ -43,7 +44,7 @@ y_combined = np.concatenate((y_interp1, y_interp2))
 
 # Create a logarithmic plot for both x and y axes with the combined interpolated curve
 font_type = 'Times New Roman'
-plt.figure(figsize=(12, 8))
+fig = plt.figure(figsize=(12, 8))
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "serif",
@@ -100,7 +101,7 @@ triangle_vertices_terrestrial = [
 # Create a Polygon patch representing the triangle
 triangle_patch_terrestrial = patches.Polygon(triangle_vertices_terrestrial, closed=True, edgecolor='none', facecolor='saddlebrown', alpha=0.3)
 plt.gca().add_patch(triangle_patch_terrestrial)
-plt.text(585.9152387622236, 1.770570432781873e-13, 'Terrestrial', fontsize=21, color='saddlebrown', fontweight='bold')
+plt.text(285.9152387622236, 1.770570432781873e-13, 'Terrestrial', fontsize=21, color='saddlebrown', fontweight='bold')
 
 triangle_vertices_reactor = [
 (739965.5726634334, 1.5952552724625842e-10),
@@ -153,7 +154,7 @@ triangle_vertices_atmospheric = [
 triangle_patch_atmospheric = patches.Polygon(triangle_vertices_atmospheric, closed=True, edgecolor='none', facecolor='blue', alpha=0.3)
 plt.gca().add_patch(triangle_patch_atmospheric)
 atmospheric_exp = "Super-K\nJUNO\nMINOS+\nIceCube\nPINGU\nDUNE\nINO/ICAL\nHyper-K\nLAGUNA"
-plt.text(4242868525.999314, 2.0346539975971988e-17, 'Atmospheric', fontsize=21, color='blue', fontweight='bold')
+plt.text(4242868525.999314, 2.0346539975971988e-19, 'Atmospheric', fontsize=21, color='blue', fontweight='bold')
 # Add the text inside the triangle
 plt.text(17870474655.681412, 1.514218958007772e-28, atmospheric_exp, fontsize=8, color='blue', fontfamily='serif', fontweight='bold')
 
@@ -168,7 +169,7 @@ triangle_vertices_cosmic = [
 triangle_patch_cosmic = patches.Polygon(triangle_vertices_cosmic, closed=True, edgecolor='none', facecolor='gray', alpha=0.3)
 plt.gca().add_patch(triangle_patch_cosmic)
 cosmic_exp = "IceCube/PINGU\nANTARES\nANITA\nARA/ARIANNA\nKM3NET\nEVA"
-plt.text(92115012000432.47, 6.927332567206935e-16, 'Cosmic', fontsize=21, color='black', fontweight='bold')
+plt.text(92115012000432.47, 6.927332567206935e-17, 'Cosmic', fontsize=21, color='black', fontweight='bold')
 # Add the text inside the triangle
 plt.text(28991490228064.697, 3.1554158577173575e-28, cosmic_exp, fontsize=8, color='black', fontfamily='serif', fontweight='bold')
 
@@ -179,7 +180,131 @@ plt.text(28991490228064.697, 3.1554158577173575e-28, cosmic_exp, fontsize=8, col
 #plt.imshow(inserted_image,  alpha=0.5)  # Adjust transparency
 
 
+bigbang_image_path = 'bigbang.jpeg'
+bigbang_image = mpimg.imread(bigbang_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.18
+bottom = 0.3
+width = 0.12
+height = 0.12
+ax_bigbang = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_bigbang.imshow(bigbang_image)
+ax_bigbang.axis('off')  # Turn off axis
 # Customize plot appearance
+solar_image_path = 'solar.jpeg'
+solar_image = mpimg.imread(solar_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.26
+bottom = 0.45
+width = 0.15
+height = 0.10
+ax_solar = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_solar.imshow(solar_image)
+ax_solar.axis('off')  # Turn off axis
+
+# Customize plot appearance
+terrestrial_image_path = 'terrestrial.webp'
+terrestrial_image = mpimg.imread(terrestrial_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.22
+bottom = 0.58
+width = 0.15
+height = 0.10
+ax_terrestrial = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_terrestrial.imshow(terrestrial_image)
+ax_terrestrial.axis('off')  # Turn off axis
+
+# Customize plot appearance
+reactor_image_path = 'reactor.jpeg'
+reactor_image = mpimg.imread(reactor_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.28
+bottom = 0.70
+width = 0.15
+height = 0.10
+ax_reactor = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_reactor.imshow(reactor_image)
+ax_reactor.axis('off')  # Turn off axis
+# Customize plot appearance
+supernova_image_path = 'supernova.webp'
+supernova_image = mpimg.imread(supernova_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.48
+bottom = 0.775
+width = 0.15
+height = 0.10
+ax_supernova = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_supernova.imshow(supernova_image)
+ax_supernova.axis('off')  # Turn off axis
 #plt.grid(True)
-plt.show()
+# Customize plot appearance
+accelerator_image_path = 'accelerator.png' # from https://phd.uniroma1.it/web/pagina.aspx?i=3504&l=EN&p=95 
+accelerator_image = mpimg.imread(accelerator_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.57
+bottom = 0.67
+width = 0.15
+height = 0.10
+ax_accelerator = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_accelerator.imshow(accelerator_image)
+ax_accelerator.axis('off')  # Turn off axis
+# Customize plot appearance
+atmospheric_image_path = 'atmospheric.webp' # from https://www.astronomy.com/science/the-history-of-cosmic-rays-is-buried-beneath-our-feet/ 
+atmospheric_image = mpimg.imread(atmospheric_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.62
+bottom = 0.47
+width = 0.15
+height = 0.10
+ax_atmospheric = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_atmospheric.imshow(atmospheric_image)
+ax_atmospheric.axis('off')  # Turn off axis
+
+# Customize plot appearance
+cosmic_image_path = 'cosmic.jpeg' # from https://www.elisascience.org/articles/lisa-mission/lisa-technology/electromagnetic-universe-and-cosmic-landscape 
+cosmic_image = mpimg.imread(cosmic_image_path)
+
+# Add an Axes (subplot) to the figure at a specific position and with specific size
+# The values in add_axes are [left, bottom, width, height] in normalized coordinates (0 to 1)
+left = 0.76
+bottom = 0.54
+width = 0.15
+height = 0.10
+ax_cosmic = fig.add_axes([left, bottom, width, height])
+
+# Display the image on the subplot
+ax_cosmic.imshow(cosmic_image)
+ax_cosmic.axis('off')  # Turn off axis
+#plt.show()
+# Save the figure as a PDF
+output_path = 'ne_updated.pdf'
+plt.savefig(output_path,dpi=600, format='pdf', bbox_inches='tight', pad_inches=0.1)
 
