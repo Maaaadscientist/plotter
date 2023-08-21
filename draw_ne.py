@@ -180,7 +180,7 @@ plt.text(28991490228064.697, 3.1554158577173575e-28, cosmic_exp, fontsize=8, col
 #plt.imshow(inserted_image,  alpha=0.5)  # Adjust transparency
 
 
-bigbang_image_path = 'bigbang.jpeg'
+bigbang_image_path = 'bigbang.jpeg' # from https://hub.jhu.edu/2019/08/08/dark-matter-existed-before-big-bang/
 bigbang_image = mpimg.imread(bigbang_image_path)
 
 # Add an Axes (subplot) to the figure at a specific position and with specific size
@@ -195,7 +195,7 @@ ax_bigbang = fig.add_axes([left, bottom, width, height])
 ax_bigbang.imshow(bigbang_image)
 ax_bigbang.axis('off')  # Turn off axis
 # Customize plot appearance
-solar_image_path = 'solar.jpeg'
+solar_image_path = 'solar.jpeg' # from https://www.bhphotovideo.com/explora/outdoors/features/space-sun-and-solar-viewing-facts-versus-fiction
 solar_image = mpimg.imread(solar_image_path)
 
 # Add an Axes (subplot) to the figure at a specific position and with specific size
@@ -227,7 +227,7 @@ ax_terrestrial.imshow(terrestrial_image)
 ax_terrestrial.axis('off')  # Turn off axis
 
 # Customize plot appearance
-reactor_image_path = 'reactor.jpeg'
+reactor_image_path = 'reactor.jpeg' # from https://www.iaea.org/newscenter/news/what-is-cherenkov-radiation
 reactor_image = mpimg.imread(reactor_image_path)
 
 # Add an Axes (subplot) to the figure at a specific position and with specific size
@@ -242,7 +242,7 @@ ax_reactor = fig.add_axes([left, bottom, width, height])
 ax_reactor.imshow(reactor_image)
 ax_reactor.axis('off')  # Turn off axis
 # Customize plot appearance
-supernova_image_path = 'supernova.webp'
+supernova_image_path = 'supernova.webp' # from https://sea.mashable.com/life/21616/huge-unusually-powerful-explosion-in-space-just-detected-by-scientists
 supernova_image = mpimg.imread(supernova_image_path)
 
 # Add an Axes (subplot) to the figure at a specific position and with specific size
