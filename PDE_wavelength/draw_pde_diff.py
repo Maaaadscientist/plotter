@@ -68,9 +68,9 @@ plt.text(435, pde_415_ov5V + 0.06, '$\\frac{\\mathrm{PDE}^{\\,415\\mathrm{nm}}_{
 # Adding arrows to indicate the difference
 arrow_offset = 0.005
 plt.annotate('', xy=(390, pde_404_ov3V - arrow_offset), xytext=(390, pde_415_ov3V + arrow_offset),
-             arrowprops=dict(arrowstyle="<->", color=color_3V))
+             arrowprops=dict(arrowstyle="<->", lw=1, color=color_3V))
 plt.annotate('', xy=(380, pde_404_ov5V - arrow_offset), xytext=(380, pde_415_ov5V + arrow_offset),
-             arrowprops=dict(arrowstyle="<->", color=color_5V))
+             arrowprops=dict(arrowstyle="<->", lw=1, color=color_5V))
 
 plt.xlim(350, max(df_ov3V['X']) + 10)
 plt.xticks(fontsize=labelsize)  # Adjust font size for x-axis ticks
