@@ -5,7 +5,7 @@ from scipy.interpolate import interp1d
 
 labelsize=18
 titlesize=24
-textsize=14
+textsize=20
 
 color_3V = 'blue'
 color_5V = 'orangered'
@@ -44,26 +44,26 @@ norm_diff_ov5V = calculate_normalized_difference(pde_404_ov5V, pde_415_ov5V)
 # Plotting
 plt.figure(figsize=(12, 6))
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    #"font.family": "helvet",
-    "text.latex.preamble": r"\usepackage{courier}",
-})
+#plt.rcParams.update({
+#    "text.usetex": True,
+#    #"font.family": "serif",
+#    #"font.family": "helvet",
+#    #"text.latex.preamble": r"\usepackage{courier}",
+#})
 
 # Line plot for ov3V
-plt.plot(df_ov3V['X'], df_ov3V['Y'], color=color_3V, label='Overvoltage 3V', linestyle='--', marker='x', markersize=4, alpha=0.7, linewidth=1)
+plt.plot(df_ov3V['X'], df_ov3V['Y'], color=color_3V, label='Overvoltage 3V', linestyle='--', marker='o', markersize=4, alpha=0.7, linewidth=1.5,markerfacecolor='none')
 
 # Line plot for ov5V
-plt.plot(df_ov5V['X'], df_ov5V['Y'], color=color_5V, label='Overvoltage 5V', linestyle='-', marker='^', markersize=4, alpha=0.7, linewidth=1)
+plt.plot(df_ov5V['X'], df_ov5V['Y'], color=color_5V, label='Overvoltage 5V', linestyle='-', marker='^', markersize=4, alpha=0.7, linewidth=1.5,markerfacecolor='none')
 
 # Draw horizontal lines for interpolated PDE values
 plt.hlines(y=pde_404_ov3V, xmin=350, xmax=404, color=color_3V, linestyle=':', alpha=0.5)
 plt.hlines(y=pde_415_ov3V, xmin=350, xmax=415, color=color_3V, linestyle=':', alpha=0.5)
 plt.hlines(y=pde_404_ov5V, xmin=350, xmax=404, color=color_5V, linestyle='-', alpha=0.5)
 plt.hlines(y=pde_415_ov5V, xmin=350, xmax=415, color=color_5V, linestyle='-', alpha=0.5)
-plt.text(490, pde_415_ov3V - 0.06, '$\\frac{\\mathrm{PDE}^{\\,415\\mathrm{nm}}_{\\,3\\mathrm{V}}-\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,3\\mathrm{V}}}{\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,3\\mathrm{V}}} =\\, $'+f'{norm_diff_ov3V:.4f}', verticalalignment='top', horizontalalignment='right', color=color_3V,fontsize=textsize)
-plt.text(435, pde_415_ov5V + 0.06, '$\\frac{\\mathrm{PDE}^{\\,415\\mathrm{nm}}_{\\,5\\mathrm{V}}-\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,5\\mathrm{V}}}{\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,5\\mathrm{V}}} =\\, $'+f'{norm_diff_ov5V:.4f}', verticalalignment='bottom', horizontalalignment='right', color=color_5V,fontsize=textsize)
+plt.text(550, pde_415_ov3V - 0.22, '$\\frac{\\mathrm{PDE}^{\\,415\\mathrm{nm}}_{\\,3\\mathrm{V}}-\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,3\\mathrm{V}}}{\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,3\\mathrm{V}}} =\\, $'+f'{norm_diff_ov3V:.4f}', verticalalignment='top', horizontalalignment='right', color=color_3V,fontsize=textsize)
+plt.text(550, pde_415_ov5V - 0.12, '$\\frac{\\mathrm{PDE}^{\\,415\\mathrm{nm}}_{\\,5\\mathrm{V}}-\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,5\\mathrm{V}}}{\\mathrm{PDE}^{\\,404\\mathrm{nm}}_{\\,5\\mathrm{V}}} =\\, $'+f'{norm_diff_ov5V:.4f}', verticalalignment='bottom', horizontalalignment='right', color=color_5V,fontsize=textsize)
 
 # Adding arrows to indicate the difference
 arrow_offset = 0.005
@@ -78,6 +78,6 @@ plt.yticks(fontsize=labelsize)  # Adjust font size for y-axis ticks
 plt.xlabel('Wavelength (nm)', fontsize=labelsize)
 plt.ylabel('Relative PDE (Photon Detection Efficiency)', fontsize=labelsize)
 plt.title('PDE vs Wavelength for Different Overvoltages', fontsize=titlesize)
-plt.legend(fontsize=labelsize)
+plt.legend(fontsize=textsize)
 plt.show()
 
