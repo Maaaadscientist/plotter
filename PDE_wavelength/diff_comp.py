@@ -55,7 +55,7 @@ plt.errorbar(over_voltages, pde_404, yerr=error_404, linestyle='-', label='404 n
 #plt.plot(over_voltages, interp_404(over_voltages), label='404 nm Interpolation')
 
 # Plotting data and interpolation for 415 nm
-plt.errorbar(over_voltages, pde_415, yerr=error_415, linestyle='-', label='415 nm Data', capsize=3,markersize=4, linewidth=1.5, marker="o", color=color_415,markerfacecolor='none')
+plt.errorbar(over_voltages, pde_415, yerr=error_415, linestyle='--', label='415 nm Data', capsize=3,markersize=4, linewidth=1.5, marker="o", color=color_415,markerfacecolor='none')
 #plt.plot(over_voltages, interp_415(over_voltages), label='415 nm Interpolation')
 
 # Draw horizontal lines for interpolated PDE values
@@ -76,7 +76,7 @@ plt.ylim(0,0.6)
 plt.xlim(0,7)
 plt.xlabel('Over Voltage (V)',fontsize=labelsize)
 plt.ylabel('PDE',fontsize=labelsize)
-plt.title('Photodetection Efficiency (PDE) vs Over Voltage', fontsize=titlesize)
+plt.title('PDE vs Over Voltage', fontsize=titlesize)
 plt.legend(fontsize=labelsize, loc='lower right')
 
 plt.xticks(fontsize=labelsize)  # Adjust font size for x-axis ticks
