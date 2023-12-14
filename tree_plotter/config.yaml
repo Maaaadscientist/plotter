@@ -1,0 +1,32 @@
+tree_path: /Users/wanghanwen/sipm-massive/merged_csv_Dec10.root
+tree_name: tree
+branch_to_draw:
+   chi2:
+      name: chi2
+      xlabel: ${\chi}^2$
+      ylabel: Number of fit
+      title: ${\chi}^2$ distribution
+      histtype: bar
+      lower_edge: 0.
+      upper_edge: 10.
+      step: 0.05
+   ov_min:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Minimum Real Over Voltage
+      selections: vol==1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 5
+      step: 0.05
+   ov_max:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Maximum Real Over Voltage
+      selections: vol==6
+      lower_edge: 5.
+      upper_edge: 10
+      step: 0.05
+
