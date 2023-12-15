@@ -8,6 +8,9 @@ import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
+labelsize=28
+titlesize=40
+textsize=24
 config_path = os.path.abspath(sys.argv[1])
 with open(config_path, 'r') as yaml_file:
     yaml_data = yaml.safe_load(yaml_file)
@@ -55,11 +58,26 @@ for branch in yaml_data['branch_to_draw']:
         color = yaml_data['branch_to_draw'][branch]['color']
     else:
         color = 'deepskyblue'
-    plt.figure(figsize=(4, 3))
-    plt.hist(bin_edges[:-1], bins=bin_edges, weights=bin_contents, edgecolor='black', color=color,linewidth=0.5, histtype='stepfilled')
-    plt.xlabel(yaml_data['branch_to_draw'][branch]['xlabel'])
-    plt.ylabel(yaml_data['branch_to_draw'][branch]['ylabel'])
-    plt.title(yaml_data['branch_to_draw'][branch]['title'])
+
+    plt.figure(figsize=(20, 15))
+    # Calculate statistics
+    n_entries = hist.GetEntries()
+    mean = hist.GetMean()
+    sigma = hist.GetStdDev()
+
+    # ... [existing code for plotting histogram] ...
+
+    # Add a statistical pad with text
+    stats_text = f'Entries: {n_entries:.0f}\nMean: {mean:.2f}\nSigma: {sigma:.2f}'
+    plt.gca().text(0.8, 0.95, stats_text, transform=plt.gca().transAxes, 
+                   fontsize=textsize, verticalalignment='top')
+
+    plt.hist(bin_edges[:-1], bins=bin_edges, weights=bin_contents, edgecolor='black', color=color,linewidth=1, histtype='stepfilled')
+    plt.xlabel(yaml_data['branch_to_draw'][branch]['xlabel'], fontsize=labelsize,labelpad=15)
+    plt.ylabel(yaml_data['branch_to_draw'][branch]['ylabel'],fontsize=labelsize,labelpad=15)
+    plt.xticks(fontsize=labelsize)
+    plt.yticks(fontsize=labelsize)
+    plt.title(yaml_data['branch_to_draw'][branch]['title'],fontsize=titlesize, pad=20)
     plt.savefig(f"{branch}.pdf")
     plt.clf()
 #
