@@ -1,0 +1,146 @@
+vbd_diff:
+   voltages:
+      default:
+         bins: 0,0.02, 0.05,0.1,0.19,0.3,0.5,1.0,2.0,10
+    
+pde:
+   digit: 2
+   xlabel: PDE
+   ylabel: Number of tiles
+   y_min: 0.4
+   y_max: 0.7
+   tolerance: 1
+   hline:
+      minimum: 0.44
+      typical: 0.47
+   scale: 1
+   title: Photon detection efficiency
+   legend1_pos: upper left
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 0.44
+         upper_edge: 0.68
+         step: 0.02
+      4.0:
+         bins: 0.40,0.44,0.46,0.48,0.50,0.51,0.52,0.53,0.54,0.55,0.56,0.58,0.6,0.8,1
+  
+dcr:
+   digit: 1
+   xlabel: DCR (Hz/$\mathrm{mm}^2$)
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 120
+   tolerance: 19000
+   hline:
+      maximum: 41.7
+      typical: 13.9
+   scale: 1
+   title: Dark counting rate
+   legend1_pos: upper left
+   legend2_pos: upper right
+   voltages:
+      default:
+         bins: 0,15,30.,41.7,60,100,100,150,200,300,20000
+      4.0:
+         bins: 0.,15.,30.,41.7,60.,100,150,200,300,20000
+
+pct:
+   digit: 2
+   xlabel: Crosstalk Probability
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 0.5
+   tolerance: 1
+   hline:
+      maximum: 0.15
+      typical: 0.12
+   scale: 1
+   title: Crosstalk Probability
+   legend1_pos: lower right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 0.1
+         upper_edge: 0.4
+         step: 0.02
+      4.0:
+         bins: 0.0,0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.18,0.20,0.22,0.24,0.26,0.3
+
+ap:
+   digit: 2
+   xlabel: After Pulsing
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 0.12
+   tolerance: 0.1
+   hline:
+      maximum: 0.08
+      typical: 0.04
+   scale: 1
+   title: After Pulsing Probability
+   legend1_pos: center right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 0.0
+         upper_edge: 0.05
+         step: 0.002
+enf_gp:
+   digit: 2
+   xlabel: ENF of GP
+   ylabel: Number of Tiles
+   y_min: 1
+   y_max: 2.
+   tolerance: 3
+   scale: 1
+   title: Excess Noise Factor of Generalized Poisson
+   legend1_pos: lower right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 1
+         upper_edge: 2.
+         step: 0.05
+
+enf_data:
+   digit: 2
+   xlabel: ENF of Data
+   ylabel: Number of Tiles
+   y_min: 1
+   y_max: 2.
+   tolerance: 3
+   scale: 1
+   title: Excess Noise Factor of Data
+   legend1_pos: lower right
+   legend2_pos: center right
+   voltages:
+      default:
+         lower_edge: 1
+         upper_edge: 2.
+         step: 0.05
+
+gain:
+   digit: 2
+   xlabel: Gain
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 5
+   tolerance: 10000000
+   hline:
+      minimum: 1
+      typical: 4
+   scale: 1e-6
+   title: Pixel Gain
+   legend1_pos: center right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 1
+         upper_edge: 4
+         step: 0.2
+      4.0:
+         lower_edge: 1.8
+         upper_edge: 2.8
+         step: 0.05
+         bins: 0,1.8,1.85,1.9,1.95,2.0,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4,2.45,2.5,2.6,2.7,2.8,3.0,10
