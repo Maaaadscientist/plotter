@@ -37,9 +37,7 @@ def average_value_from_csv(df, column_name, selection_criteria=None, upper_thres
         # If filtered dataframe is not empty, calculate mean and variance
         if not filtered_df.empty:
             data = filtered_df[column_name]
-            print("length of data: ", len(data))
             mu, std = norm.fit(data)
-            print(filtered_df[column_name].var(), np.sqrt(filtered_df[column_name].var()), std)
             #return filtered_df[column_name].mean(), filtered_df[column_name].var()
             return mu, std**2
         else:
