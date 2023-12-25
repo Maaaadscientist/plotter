@@ -1,6 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+import scienceplots
+
+plt.style.use('science')
+plt.style.use('nature')
 
 
 labelsize=18
@@ -51,7 +55,7 @@ plt.figure(figsize=(12, 6))
 #})
 
 # Line plot for ov5V
-plt.plot(df_ov5V['X'], df_ov5V['Y'], color=color_5V, label='Overvoltage 5V', linestyle='-', marker='o', markersize=4, alpha=0.7, linewidth=1, markerfacecolor='none')
+plt.plot(df_ov5V['X'], df_ov5V['Y'], color=color_5V, label='Overvoltage 3V', linestyle='-', marker='o', markersize=4, alpha=0.7, linewidth=1, markerfacecolor='none')
 
 
 # Draw horizontal lines for interpolated PDE values

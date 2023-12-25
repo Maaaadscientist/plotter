@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+import scienceplots
+
+plt.style.use('science')
+plt.style.use('nature')
 
 
 labelsize=18
@@ -31,13 +35,13 @@ over_voltages = [vol - 47.17 for vol in range(48,54)]  # Replace with actual ove
 interp_404 = interp1d(over_voltages, pde_404, kind='cubic')
 interp_415 = interp1d(over_voltages, pde_415, kind='cubic')
 
-# Evaluate the interpolation at OV = 3V
-pde_404_at_3V = interp_404(3)
-pde_415_at_3V = interp_415(3)
+# Evaluate the interpolation at OV = 5V
+pde_404_at_5V = interp_404(3)
+pde_415_at_5V = interp_415(3)
 
-# Print the PDE values at OV = 3V for comparison
-print(f"PDE at OV = 3V for 404 nm wavelength: {pde_404_at_3V}")
-print(f"PDE at OV = 3V for 415 nm wavelength: {pde_415_at_3V}")
+# Print the PDE values at OV = 5V for comparison
+print(f"PDE at OV = 5V for 404 nm wavelength: {pde_404_at_5V}")
+print(f"PDE at OV = 5V for 415 nm wavelength: {pde_415_at_5V}")
 
 # Creating the plot
 plt.figure(figsize=(10, 6))
@@ -59,15 +63,15 @@ plt.errorbar(over_voltages, pde_415, yerr=error_415, linestyle='--', label='415 
 #plt.plot(over_voltages, interp_415(over_voltages), label='415 nm Interpolation')
 
 # Draw horizontal lines for interpolated PDE values
-plt.hlines(y=pde_404_at_3V, xmin=0, xmax=3, color=color_404, linestyle=':', alpha=0.5)
-plt.hlines(y=pde_415_at_3V, xmin=0, xmax=3, color=color_415, linestyle=':', alpha=0.5)
-plt.vlines(ymin=0,ymax=pde_415_at_3V, x=3, color="black", linestyle=':', alpha=0.5)
-#plt.text(4, pde_404_at_3V - 0.06, f'{pde_404_at_3V:.2f}', verticalalignment='top', horizontalalignment='right', color=color_404,fontsize=textsize)
-plt.text(6.8, pde_415_at_3V-0.1, '$\\frac{\\mathrm{PDE}^{\,415\\mathrm{nm}}_{\,3\\mathrm{V}} - \\mathrm{PDE}^{\,404\\mathrm{nm}}_{\,3\\mathrm{V}}}{\\mathrm{PDE}^{\,404\\mathrm{nm}}_{\,3\\mathrm{V}}}$ = \n'+f'({pde_415_at_3V:.3f} - {pde_404_at_3V:.3f}) / {pde_404_at_3V:.3f} = \n {(pde_415_at_3V - pde_404_at_3V)/pde_404_at_3V * 100:.1f}%', verticalalignment='top', horizontalalignment='right', color="black",fontsize=textsize)
+plt.hlines(y=pde_404_at_5V, xmin=0, xmax=3, color=color_404, linestyle=':', alpha=0.5)
+plt.hlines(y=pde_415_at_5V, xmin=0, xmax=3, color=color_415, linestyle=':', alpha=0.5)
+plt.vlines(ymin=0,ymax=pde_415_at_5V, x=3, color="black", linestyle=':', alpha=0.5)
+#plt.text(4, pde_404_at_5V - 0.06, f'{pde_404_at_5V:.2f}', verticalalignment='top', horizontalalignment='right', color=color_404,fontsize=textsize)
+plt.text(6.8, pde_415_at_5V-0.1, '$\\frac{\\mathrm{PDE}^{\,415\\mathrm{nm}}_{\,3\\mathrm{V}} - \\mathrm{PDE}^{\,404\\mathrm{nm}}_{\,3\\mathrm{V}}}{\\mathrm{PDE}^{\,404\\mathrm{nm}}_{\,3\\mathrm{V}}}$ = \n'+f'({pde_415_at_5V:.3f} - {pde_404_at_5V:.3f}) / {pde_404_at_5V:.3f} = \n {(pde_415_at_5V - pde_404_at_5V)/pde_404_at_5V * 100:.1f}\%', verticalalignment='top', horizontalalignment='right', color="black",fontsize=textsize)
 
 # Adding arrows to indicate the difference
 arrow_offset = 0.005
-#plt.annotate('', xy=(3, pde_404_at_3V - arrow_offset), xytext=(3, pde_415_at_3V + arrow_offset),
+#plt.annotate('', xy=(3, pde_404_at_5V - arrow_offset), xytext=(3, pde_415_at_5V + arrow_offset),
 #             arrowprops=dict(arrowstyle="<->", lw=1, color="black"))
 
 

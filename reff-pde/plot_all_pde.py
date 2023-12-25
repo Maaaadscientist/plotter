@@ -57,7 +57,7 @@ def plot_selected_pde_vs_ov(data_directory, selected_tsn):
         plt.errorbar(data['ov'], data['pde'], yerr=data['pde_err'], label=f'TSN {tsn}', capsize=3, markersize=size_marker, fmt=f'{marker}{linestyle}')
 
     # Customizing the plot
-    plt.title('Ref. SiPM Photon Detection Efficiency', fontsize=titlesize,pad=20)
+    plt.title('Ref. SiPM Photon Detection Efficiency at 404nm', fontsize=titlesize,pad=20)
     plt.xlabel('Over Voltage (V)', fontsize=labelsize,labelpad=15)
     plt.ylabel('PDE', fontsize=labelsize, labelpad=15)
     plt.legend(fontsize=textsize)
@@ -92,7 +92,7 @@ def plot_selected_pde_vs_ov(data_directory, selected_tsn):
         plt.errorbar(data['vol'], data['pde'], yerr=data['pde_err'], label=f'TSN {tsn}', capsize=3, markersize=size_marker, fmt=f'{marker}{linestyle}')
 
     # Customizing the plot
-    plt.title('Ref. SiPM Photon Detection Efficiency', fontsize=titlesize, pad=20)
+    plt.title('Ref. SiPM Photon Detection Efficiency at 404nm', fontsize=titlesize, pad=20)
     plt.xlabel('Voltage (V)', fontsize=labelsize,labelpad=15)
     plt.ylabel('PDE', fontsize=labelsize,labelpad=15)
     plt.legend(fontsize=textsize)
