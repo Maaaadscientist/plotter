@@ -52,7 +52,13 @@ run = int(file_info['run'])
 vol = int(file_info['ov'])
 channel = int(file_info['channel'])
 
-pos = 5
+pos = int(sys.argv[3])
+output_path = os.getcwd()
+if len(sys.argv) > 4:
+    output_path = os.path.abspath(sys.argv[4])
+run_path = "run_" + str(run).zfill(4)
+if not os.path.isdir(output_path+f'/{run_path}'):
+    os.makedirs(output_path +f'/{run_path}')
 df = pd.read_csv(csv_path)
 channel_data = df[(df['pos'] == pos) & (df['run'] == run) & (df['vol'] == vol) & (df['ch'] == channel)]
 hist_name = f"waveform_ch{pos}"
@@ -200,5 +206,5 @@ plt.legend()
 plt.yscale('log')
 plt.xlabel('Amplitude (mV)')
 plt.ylabel('Number of Events')
-plt.savefig("spectrum_amp.pdf")
+plt.savefig(f"{output_path}/{run_path}/amplitude_spectrum_{vol}V.pdf")
 
