@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 
 # Replace these file paths with the actual paths to your CSV files
-input_csv = "test.csv"  # CSV containing "tsn" and "ch"
 input_csv = os.path.abspath(sys.argv[1])
 output_dir = os.path.abspath(sys.argv[2])
 if not os.path.isdir(output_dir + "/jobs"):
@@ -56,4 +55,53 @@ for index, row in df.iterrows():
                         file.write(cmd)
 
 print("Bash scripts have been generated.")
+# Generate the initial_jobs_wrapper.sh script
+wrapper_script_path = os.path.join(output_dir, 'initial_jobs_wrapper.sh')
+with open(wrapper_script_path, 'w') as wrapper_script:
+    wrapper_script.write("""#!/bin/bash
+# Directory containing the job scripts
+jobs_dir="{jobs_dir}"
 
+# Argument handling for the specific job script to execute
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 [ProcId]"
+    exit 1
+fi
+
+procid=$1  # The provided ProcId determines which job script to run
+
+# Get an array of job scripts
+scripts=( $(ls $jobs_dir/job_script_tsn_*_ch_*.sh) )
+
+# Calculate total available jobs
+total_jobs=${{#scripts[@]}}
+
+# Determine the job script to execute based on ProcId
+if [ $procid -ge 0 ] && [ $procid -lt $total_jobs ]; then
+    script_to_run="${{scripts[$procid]}}"
+    echo "Running job script: $script_to_run"
+    bash "$script_to_run"
+else
+    echo "Error: ProcId $procid is out of range. Only $total_jobs jobs are available."
+    exit 1
+fi
+""".format(jobs_dir=os.path.join(output_dir, 'jobs')))
+# Make the wrapper script executable
+os.chmod(wrapper_script_path, 0o755)
+
+print("Wrapper script has been generated.")
+
+# Calculate the number of job scripts generated
+num_job_scripts = len(os.listdir(os.path.join(output_dir, 'jobs')))
+
+# Ask user if they want to submit jobs now
+submit_jobs = input("Do you want to submit the jobs now? (yes/no): ").strip().lower()
+if submit_jobs == 'yes':
+    # Construct the submission command
+    submit_command = f"hep_sub -e /dev/null -o /dev/null {wrapper_script_path} -argu \"%{{ProcId}}\" -n {num_job_scripts}"
+    print("Submitting jobs...")
+    os.system(submit_command)
+    print(f"Jobs have been submitted with command: {submit_command}")
+else:
+    print("Jobs have not been submitted. You can submit them later with the following command:")
+    print(f"hep_sub -e /dev/null -o /dev/null {wrapper_script_path} -argu \"%{{ProcId}}\" -n {num_job_scripts}")
