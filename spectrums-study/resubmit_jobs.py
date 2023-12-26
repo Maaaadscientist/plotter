@@ -29,7 +29,7 @@ def check_output_consistency(job_script):
         lines = file.readlines()
 
     for line in lines:
-        if line.startswith("python"):
+        if line.startswith("$python"):
             parts = line.split()
             output_path = parts[-1]  # Assuming the second last argument is the output path
 

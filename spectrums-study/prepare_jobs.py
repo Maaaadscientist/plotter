@@ -45,13 +45,15 @@ for index, row in df.iterrows():
         file.write("#!/bin/bash\n")
         file.write("#SBATCH --job-name=Job_TSN_{}\n".format(tsn))  # Example of a SLURM directive
         file.write('. /workfs2/juno/wanghanwen/sipm-massive/env_lcg.sh\n')
+        file.write('sleep 3\n')
+        file.write('python=$(which python3)\n')
 
         # Loop over runs, positions, and volumes to generate commands
         for run in runs:
             for pos in poss:
                 for vol in volumes:
                     for scr in scripts:
-                        cmd = (f"python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
+                        cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
                                f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")
                         file.write(cmd)
 
