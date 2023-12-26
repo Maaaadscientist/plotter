@@ -16,6 +16,7 @@ import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
+plt.rcParams['text.usetex'] = False
 labelsize=28
 titlesize=40
 textsize=24
@@ -108,6 +109,7 @@ y_min = data.min() - 5
 for x_min, x_max in zip([400,1250],[500,1350]):
     if x_min == 400:
         category = "dark"
+        y_min += 3
     else:
         category = "light"
     #y_min, y_max = 70, 100  # define your range here
@@ -202,7 +204,7 @@ for x_min, x_max in zip([400,1250],[500,1350]):
                   "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
                   "DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
                   "Gain :"+f" {gain:.3f} (pC)")
-    plt.text(0.65, 0.96, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
+    plt.text(0.52, 0.96, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
     
     plt.tick_params(axis='x', which='major', pad=10)  # Increase padding for x-axis labels
     plt.tick_params(axis='y', which='major', pad=15)  # Increase padding for y-axis labels

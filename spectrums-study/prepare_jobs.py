@@ -29,8 +29,8 @@ scripts = [
 ]
 # Start generating the scripts
 for index, row in df.iterrows():
-    tsn = row['tsn']
-    ch = row['ch']
+    tsn = int(row['tsn'])
+    ch = int(row['ch'])
     print(tsn,ch)
 
     # Filter the run_pos_data for the current tsn
@@ -41,6 +41,9 @@ for index, row in df.iterrows():
     print(runs)
     # Create a bash script for the current 'tsn' and 'ch'
     script_name = f"job_script_tsn_{tsn}_ch_{ch}.sh"
+    if len(runs) == 0:
+        print("No runs for tsn", f"{tsn}-{ch}")
+        continue
     with open(f"{output_dir}/jobs/" + script_name, 'w') as file:
         file.write("#!/bin/bash\n")
         file.write("#SBATCH --job-name=Job_TSN_{}\n".format(tsn))  # Example of a SLURM directive
@@ -51,8 +54,11 @@ for index, row in df.iterrows():
 
         # Loop over runs, positions, and volumes to generate commands
         for run in runs:
+            run = int(run)
             for pos in poss:
+                pos = int(pos)
                 for vol in volumes:
+                    vol = int(vol)
                     for scr in scripts:
                         cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
                                f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")

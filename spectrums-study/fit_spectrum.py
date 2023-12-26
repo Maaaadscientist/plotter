@@ -20,6 +20,7 @@ textsize=24
 size_marker = 100
 
 # Set global font sizes
+plt.rcParams['text.usetex'] = False
 plt.rcParams['figure.figsize'] = (25, 15)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
@@ -128,8 +129,13 @@ for branch in ['sigQ_ch']:
         lambda_err = channel_data['lambda_err'].iloc[0]
         sigma0 = channel_data['sigma0'].iloc[0]
         sigmak = channel_data['sigmak'].iloc[0]
+        sigma0_err = channel_data['sigma0_err'].iloc[0]
+        sigmak_err = channel_data['sigmak_err'].iloc[0]
         gain = channel_data['gain'].iloc[0]
         gain_err = channel_data['gain_err'].iloc[0]
+        overvol =  channel_data['ov'].iloc[0] 
+        vol =  channel_data['vol'].iloc[0] 
+        vbd_err =  channel_data['vbd_err'].iloc[0]  
         
         lower_edge = channel_data['lower_edge'].iloc[0]
         upper_edge = channel_data['upper_edge'].iloc[0]
@@ -197,16 +203,18 @@ for branch in ['sigQ_ch']:
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
                   "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
                   "Ped. :"+f" {Ped:.2f}"+" $\\pm$ "+f"{Ped_err:.2f}\n"
-                  "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{0:.2f}\n"
-                  "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{0:.2f}"
+                  "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{sigma0_err:.2f}\n"
+                  "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{sigmak_err:.2f}"
                   )
     param_top_text = (#f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
                   "Events: "+f"{events}\n"
+                  "$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
+                  "$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.2f}\n"
                   "Mean: " +f"{mean:0.2f}\n"
                   "Std. Dev.: " +f"{stderr:0.2f}\n"
                    "FD bin width: " +f"{FD_bin_width:.3f}\n"
                   "DoF: " +f"{ndf:0.0f}\n"
-                  "$\\chi^2$ / DoF: " +f"{chi2:0.3f}"
+                  "$\\chi^2$ / DoF: " +f"{chi2:0.3f}\n"
                   )
     # Calculate the statistical error (standard deviation) for each data point
     errors = np.sqrt(spectrum_y)

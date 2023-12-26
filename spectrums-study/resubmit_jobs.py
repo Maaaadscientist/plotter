@@ -18,7 +18,7 @@ def find_bottom_level_dirs(directory):
 def check_files_in_dir(directory):
     """Check if there are at least two files in the directory."""
     files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    return len(files) >= 2
+    return len(files) >= 30
 
 def check_output_consistency(job_script):
     """
