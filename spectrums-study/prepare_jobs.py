@@ -8,7 +8,8 @@ input_csv = os.path.abspath(sys.argv[1])
 output_dir = os.path.abspath(sys.argv[2])
 if not os.path.isdir(output_dir + "/jobs"):
     os.makedirs(output_dir + "/jobs")
-run_pos_csv = "/Users/wanghanwen/codes/plotter/spectrums-study/merged_csv_Dec10.csv"  # CSV containing "run" and "pos" for each "tsn"
+#run_pos_csv = "/Users/wanghanwen/codes/plotter/spectrums-study/merged_csv_Dec10.csv"  # CSV containing "run" and "pos" for each "tsn"
+run_pos_csv = "/junofs/users/wanghanwen/combined_csv_Dec26.csv"
 root_path = os.getcwd()#""
 script_path = os.getcwd()
 print(script_path)
