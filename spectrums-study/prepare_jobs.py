@@ -44,9 +44,10 @@ for index, row in df.iterrows():
     with open(f"{output_dir}/jobs/" + script_name, 'w') as file:
         file.write("#!/bin/bash\n")
         file.write("#SBATCH --job-name=Job_TSN_{}\n".format(tsn))  # Example of a SLURM directive
-        file.write('. /workfs2/juno/wanghanwen/sipm-massive/env_lcg.sh\n')
-        file.write('sleep 3\n')
-        file.write('python=$(which python3)\n')
+        
+        file.write("source /cvmfs/juno.ihep.ac.cn/sw/anaconda/Anaconda3-2020.11-Linux-x86_64/bin/activate root622\n")
+        file.write('sleep 2\n')
+        file.write('python=$(which python)\n')
 
         # Loop over runs, positions, and volumes to generate commands
         for run in runs:
@@ -57,6 +58,7 @@ for index, row in df.iterrows():
                                f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")
                         file.write(cmd)
 
+os.system(f"chmod a+x {output_dir}/jobs/*.sh")
 print("Bash scripts have been generated.")
 # Generate the initial_jobs_wrapper.sh script
 wrapper_script_path = os.path.join(output_dir, 'initial_jobs_wrapper.sh')
