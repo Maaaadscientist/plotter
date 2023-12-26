@@ -10,7 +10,7 @@ if not os.path.isdir(output_dir + "/jobs"):
     os.makedirs(output_dir + "/jobs")
 #run_pos_csv = "/Users/wanghanwen/codes/plotter/spectrums-study/merged_csv_Dec10.csv"  # CSV containing "run" and "pos" for each "tsn"
 run_pos_csv = "/junofs/users/wanghanwen/combined_csv_Dec26.csv"
-root_path = os.getcwd()#""
+root_path = "/junofs/users/wanghanwen/main-runs/main"#os.getcwd()#""
 script_path = os.getcwd()
 print(script_path)
 # Read the input CSV file
@@ -51,7 +51,7 @@ for index, row in df.iterrows():
             for pos in poss:
                 for vol in volumes:
                     for scr in scripts:
-                        cmd = (f"python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
+                        cmd = (f"python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
                                f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")
                         file.write(cmd)
 
