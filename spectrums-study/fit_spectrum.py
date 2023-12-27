@@ -136,6 +136,9 @@ for branch in ['sigQ_ch']:
         overvol =  channel_data['ov'].iloc[0] 
         vol =  channel_data['vol'].iloc[0] 
         vbd_err =  channel_data['vbd_err'].iloc[0]  
+        batch =  channel_data['batch'].iloc[0] 
+        box =  channel_data['box'].iloc[0] 
+        tsn =  channel_data['tsn'].iloc[0] 
         
         lower_edge = channel_data['lower_edge'].iloc[0]
         upper_edge = channel_data['upper_edge'].iloc[0]
@@ -206,7 +209,7 @@ for branch in ['sigQ_ch']:
                   "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{sigma0_err:.2f}\n"
                   "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{sigmak_err:.2f}"
                   )
-    param_top_text = (#f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
+    param_top_text = (f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
                   "Events: "+f"{events}\n"
                   "$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
                   "$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.2f}\n"
@@ -214,7 +217,7 @@ for branch in ['sigQ_ch']:
                   "Std. Dev.: " +f"{stderr:0.2f}\n"
                    "FD bin width: " +f"{FD_bin_width:.3f}\n"
                   "DoF: " +f"{ndf:0.0f}\n"
-                  "$\\chi^2$ / DoF: " +f"{chi2:0.3f}\n"
+                  "$\\chi^2$ / DoF: " +f"{chi2:0.3f}"
                   )
     # Calculate the statistical error (standard deviation) for each data point
     errors = np.sqrt(spectrum_y)
