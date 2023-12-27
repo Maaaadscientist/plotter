@@ -18,7 +18,7 @@ textsize=24
 size_marker = 100
 
 # Set global font sizes
-plt.rcParams['text.usetex'] = False
+#plt.rcParams['text.usetex'] = False
 plt.rcParams['figure.figsize'] = (25, 15)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
