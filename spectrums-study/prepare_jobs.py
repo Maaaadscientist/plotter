@@ -35,8 +35,17 @@ for index, row in df.iterrows():
 
     # Filter the run_pos_data for the current tsn
     selected_data = run_pos_data[run_pos_data['tsn'] == tsn]
-    runs = np.unique(selected_data['run'].to_numpy())
-    poss = np.unique(selected_data['pos'].to_numpy())
+    
+    runs = []
+    poss = []
+    
+    for _, row in selected_data.iterrows():
+        run = row['run']
+        pos = row['pos']
+        if run not in runs:  # This check ensures that you're only adding unique runs and their corresponding pos
+            runs.append(run)
+            poss.append(pos)
+
 
     print(runs)
     # Create a bash script for the current 'tsn' and 'ch'
@@ -53,16 +62,15 @@ for index, row in df.iterrows():
         file.write('python=$(which python)\n')
 
         # Loop over runs, positions, and volumes to generate commands
-        for run in runs:
+        for i, run in enumerate(runs):
             run = int(run)
-            for pos in poss:
-                pos = int(pos)
-                for vol in volumes:
-                    vol = int(vol)
-                    for scr in scripts:
-                        cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
-                               f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")
-                        file.write(cmd)
+            pos = poss[i]
+            for vol in volumes:
+                vol = int(vol)
+                for scr in scripts:
+                    cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
+                           f"{run_pos_csv} {pos} {output_dir}/outputs/{tsn}-{ch}\n")
+                    file.write(cmd)
 
 os.system(f"chmod a+x {output_dir}/jobs/*.sh")
 print("Bash scripts have been generated.")
