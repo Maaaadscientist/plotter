@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from scipy.stats import binom
 from scipy.signal import find_peaks, gaussian
 from scipy.ndimage import gaussian_filter1d
 import scienceplots
@@ -50,18 +51,37 @@ def fetch_file_info(filename):
 def gauss(Q, n, sigma_n, Ped, Gain):
     return np.exp(-((Q - (Ped + n * Gain)) ** 2) / (2 * sigma_n ** 2)) / (np.sqrt(2 * np.pi) * sigma_n)
 
+def gauss_ap(Q, n, i, sigma_n, Ped, Gain, ap_gain):
+    return np.exp(-((Q - (Ped + n * Gain + i * ap_gain)) ** 2) / (2 * sigma_n ** 2)) / (np.sqrt(2 * np.pi) * sigma_n)
 def poisson(n, mu, lambda_):
     return (mu * (mu + n * lambda_) ** (n - 1) * np.exp(-mu - n * lambda_)) / factorial(n)
 
-def sigma_n(n, sigmak, sigma0):
+def sigma_n(n, sigma0, sigmak):
     return np.sqrt(n * sigmak**2 + sigma0**2)
-
+def sigma_n_i(n, i, sigma0, sigmak, sigmaAp):
+    return np.sqrt(n * sigmak**2 + sigma0**2)
+def bino(n, i, alpha):
+    return 
 # Define the PDF
 def compound_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
     total_pdf = np.zeros_like(Q)
     for n in range(n_max + 1):
-        total_pdf += poisson(n, mu, lambda_) * gauss(Q, n, sigma_n(n, sigmak, sigma0), Ped, Gain)
+        total_pdf += poisson(n, mu, lambda_) * gauss(Q, n, sigma_n(n, sigma0, sigmak), Ped, Gain)
     return total_pdf
+
+def compound_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak, sigmaAp, n_max):
+    total_pdf = np.zeros_like(Q)
+    for n in range(n_max + 1):
+        for i in range(n+1):
+            total_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain, AP_Gain)
+    ap_pdf = np.zeros_like(Q)
+    for n in range(1, n_max + 1):
+        for i in range(1,n+1):
+            ap_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain,  AP_Gain)
+    gp_pdf = np.zeros_like(Q)
+    for n in range(0, n_max + 1):
+        gp_pdf += poisson(n, mu, lambda_) * binom.pmf(0, n, alpha) * gauss_ap(Q, n, 0, sigma_n_i(n, 0, sigma0, sigmak, sigmaAp), Ped, Gain , AP_Gain)
+    return total_pdf, ap_pdf, gp_pdf
 
 # Open the ROOT file
 input_path = os.path.abspath(sys.argv[1])
@@ -83,39 +103,39 @@ df = pd.read_csv(csv_path)
 channel_data = df[(df['pos'] == pos) & (df['run'] == run) & (df['vol'] == vol) & (df['ch'] == channel)]
 
 file = ROOT.TFile(input_path, "READ")
-hist_name = f"waveform_ch{pos}"
-hist = file.Get(hist_name)
-# Find the corresponding bin numbers
-min_bin = hist.GetXaxis().FindBin(0)
-max_bin = hist.GetXaxis().FindBin(2009)
-
-# Loop over the specified range of x-bins (overvoltages)
-value_list = []
-err_list = []
-x_list = []
-for i in range(min_bin, max_bin + 1):
-    # Get the overvoltage value for the current bin
-    x = hist.GetXaxis().GetBinLowEdge(i)
-    x_list.append(round(x,1))
-    # Project the y-values for this x-bin (overvoltage) to a 1D histogram
-    hist_name = f"hist1D_{i}"
-    hist1D = hist.ProjectionY(hist_name, i, i, "e")
-
-    # Fit the 1D histogram with a Gaussian
-    fit_result = hist1D.Fit("gaus", "S")
-
-    # Extract the parameters (mean and standard deviation)
-    mean = fit_result.Parameter(1)
-    std_dev = fit_result.Parameter(2)
-
-    value_list.append(mean)
-    err_list.append(std_dev)
+#hist_name = f"waveform_ch{pos}"
+#hist = file.Get(hist_name)
+## Find the corresponding bin numbers
+#min_bin = hist.GetXaxis().FindBin(0)
+#max_bin = hist.GetXaxis().FindBin(2009)
+#
+## Loop over the specified range of x-bins (overvoltages)
+#value_list = []
+#err_list = []
+#x_list = []
+#for i in range(min_bin, max_bin + 1):
+#    # Get the overvoltage value for the current bin
+#    x = hist.GetXaxis().GetBinLowEdge(i)
+#    x_list.append(round(x,1))
+#    # Project the y-values for this x-bin (overvoltage) to a 1D histogram
+#    hist_name = f"hist1D_{i}"
+#    hist1D = hist.ProjectionY(hist_name, i, i, "e")
+#
+#    # Fit the 1D histogram with a Gaussian
+#    fit_result = hist1D.Fit("gaus", "S")
+#
+#    # Extract the parameters (mean and standard deviation)
+#    mean = fit_result.Parameter(1)
+#    std_dev = fit_result.Parameter(2)
+#
+#    value_list.append(mean)
+#    err_list.append(std_dev)
 
 # Remember to close the ROOT file
-baseline = np.array(value_list[200:900]).mean()
-baseline_fl = np.array(value_list[200:900]).var()
-baseline_sigma = (np.array(err_list[200:900])**2).mean()
-baseline_err = np.sqrt(baseline_fl + baseline_sigma)
+#baseline = np.array(value_list[200:900]).mean()
+#baseline_fl = np.array(value_list[200:900]).var()
+#baseline_sigma = (np.array(err_list[200:900])**2).mean()
+#baseline_err = np.sqrt(baseline_fl + baseline_sigma)
 
 # Load the TTree
 tree = uproot.open(f"{input_path}:signal")
@@ -129,16 +149,21 @@ for branch in ['sigQ_ch']:
         lambda_err = channel_data['lambda_err'].iloc[0]
         sigma0 = channel_data['sigma0'].iloc[0]
         sigmak = channel_data['sigmak'].iloc[0]
+        sigmaAp = channel_data['sigmaAp'].iloc[0]
         sigma0_err = channel_data['sigma0_err'].iloc[0]
         sigmak_err = channel_data['sigmak_err'].iloc[0]
         gain = channel_data['gain'].iloc[0]
         gain_err = channel_data['gain_err'].iloc[0]
-        overvol =  channel_data['ov'].iloc[0] 
+        #overvol =  channel_data['ov'].iloc[0] 
         vol =  channel_data['vol'].iloc[0] 
-        vbd_err =  channel_data['vbd_err'].iloc[0]  
-        batch =  channel_data['batch'].iloc[0] 
-        box =  channel_data['box'].iloc[0] 
-        tsn =  channel_data['tsn'].iloc[0] 
+        #vbd_err =  channel_data['vbd_err'].iloc[0]  
+        #batch =  channel_data['batch'].iloc[0] 
+        #box =  channel_data['box'].iloc[0] 
+        #tsn =  channel_data['tsn'].iloc[0] 
+        alpha = channel_data['alpha'].iloc[0]
+        alpha_err = channel_data['alpha_err'].iloc[0]
+        ap_gain = channel_data['ap_gain'].iloc[0]
+        ap_gain_err = channel_data['ap_gain_err'].iloc[0]
         
         lower_edge = channel_data['lower_edge'].iloc[0]
         upper_edge = channel_data['upper_edge'].iloc[0]
@@ -203,16 +228,19 @@ for branch in ['sigQ_ch']:
                   "$\\mu$ :"+f" {mu:.3f}"+" $\\pm$ "+f"{mu_err:.3f}\n"
                   #"$\\mu_\\mathrm{ref.}$ :"+f" {ref_mu:.3f}"+" $\\pm$ "+f"{ref_mu_err:.3f}\n"
                   "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
+                  "$\\alpha$ :" +f" {alpha:.3f}" + " $\\pm$ "+f"{alpha_err:.3f}\n"
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
                   "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
+                  "AP pe:"+f" {ap_gain/gain:.2f}"+" $\\pm$ "+f"{ap_gain_err/gain:.2f}\n"
+                  
                   "Ped. :"+f" {Ped:.2f}"+" $\\pm$ "+f"{Ped_err:.2f}\n"
                   "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{sigma0_err:.2f}\n"
                   "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{sigmak_err:.2f}"
                   )
-    param_top_text = (f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
+    param_top_text = (#f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
                   "Events: "+f"{events}\n"
                   "$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
-                  "$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.2f}\n"
+                  #"$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.2f}\n"
                   "Mean: " +f"{mean:0.2f}\n"
                   "Std. Dev.: " +f"{stderr:0.2f}\n"
                    "FD bin width: " +f"{FD_bin_width:.3f}\n"
@@ -229,8 +257,12 @@ for branch in ['sigQ_ch']:
     Q_values = np.linspace(lower_edge, upper_edge, int((upper_edge - lower_edge) * scale))  # Adjust the range and number of points as needed
     
     # Calculate the PDF
-    pdf_values_norm = compound_pdf(bins, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
-    pdf_values = compound_pdf(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
+    #pdf_values_norm = compound_pdf(bins, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
+    #pdf_values = compound_pdf(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
+    # Calculate the PDF
+    pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = compound_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    pdf_values, ap_pdf_values, gp_pdf_values = compound_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    #pdf_values = compound_pdf_ap(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     # Normalize the PDF to a probability
     bin_widths = np.diff(Q_values)
     data_bin_widths = np.diff(bins)
@@ -238,6 +270,11 @@ for branch in ['sigQ_ch']:
     normalized_pdf = pdf_values / pdf_area
     # Scale the PDF to the number of events
     scaled_pdf = normalized_pdf * np.sum(hist_counts) / np.sum(pdf_values_norm /  pdf_area)#* (data_bin_widths.mean() / bin_widths.mean())
+    #scale_factor = np.sum(hist_counts) / ((upper_edge - lower_edge) / len(Q_values)) /pdf_area 
+    scale_factor = np.sum(hist_counts) / np.sum(pdf_values_norm) #np.sum(hist_counts) / ((upper_edge - lower_edge) / len(Q_values)) /pdf_area 
+    scaled_pdf = pdf_values * scale_factor
+    scaled_ap_pdf = ap_pdf_values * scale_factor
+    scaled_gp_pdf = gp_pdf_values * scale_factor
     print("pdf_area:", pdf_area, "sum pdf:", np.sum(normalized_pdf),"pdf values norm:", np.sum(pdf_values_norm), "pdf sum:", np.sum(scaled_pdf), " hist counts: ", np.sum(hist_counts))
     
     # Calculate the residuals
@@ -260,19 +297,21 @@ for branch in ['sigQ_ch']:
     
     print("The default first color is:", first_color)   
     # First plot (Original Data and PDF)
-    axs[0].plot(Q_values, scaled_pdf, label="Fit", alpha=0.7, zorder=1,linewidth=3) # default color = #0C5DA5
+    axs[0].plot(Q_values, scaled_pdf, label="Fit", alpha=0.7, zorder=3,linewidth=3) # default color = #0C5DA5
+    axs[0].plot(Q_values, scaled_ap_pdf, label="AP", alpha=0.7, linestyle=':', zorder=2,linewidth=3) # default color = #0C5DA5
+    axs[0].plot(Q_values, scaled_gp_pdf, label="GP", alpha=0.7, linestyle='--',zorder=1,linewidth=3) # default color = #0C5DA5
     #axs[0].plot(Q_values, scaled_pdf, label="Fit", color='mediumblue', alpha=0.8, zorder=1, linewidth=3)
     axs[0].errorbar(spectrum_x, spectrum_y, yerr=errors, fmt='o', color='black', ecolor='black', label='Data', alpha=0.7, zorder=2)
     axs[0].set_yscale('log')
-    axs[0].set_ylim(0.1, 1e4)
+    axs[0].set_ylim(0.01, 1e5)
     axs[0].set_title(f'Charge Spectrum Fit')
     #axs[0].text(0.5, 0.25, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
-    axs[0].text(0.15, 0.32, param_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
-    axs[0].text(0.8, 0.95, param_top_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='paleturquoise', alpha=0.5), fontsize=textsize)
+    axs[0].text(0.8, 0.95, param_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
+    axs[0].text(0.6, 0.95, param_top_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='paleturquoise', alpha=0.5), fontsize=textsize)
     #axs[0].text(0.5,0.5,param_text,fontsize=textsize, color='blue', verticalalignment='center', horizontalalignment='center')
     common_x_min = min(spectrum_x)  # Adjust as necessary
     common_x_max = max(spectrum_x)  # Adjust as necessary
-    axs[0].legend(loc='upper left')
+    axs[0].legend(loc=(0.4,0.68))
     
     axs[0].set_xlim(common_x_min, common_x_max)
     axs[1].set_xlim(common_x_min, common_x_max)

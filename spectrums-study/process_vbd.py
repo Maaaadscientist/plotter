@@ -2,7 +2,8 @@ import csv
 import subprocess
 
 # Replace with your actual file paths
-csv_file_path = 'bad_vbd_tiles.csv'
+#csv_file_path = 'bad_vbd_tiles.csv'
+csv_file_path = 'bad_vbd_count.csv'
 script_to_run = 'vbd_by_channel.py'
 additional_arg = 'combined_csv_Dec26.csv'  # The constant argument for all calls
 
@@ -17,6 +18,7 @@ def main():
         reader = csv.DictReader(csvfile)
         for row in reader:
             tsn = row['tsn']
+            print(tsn)
             call_script(tsn)
 
 if __name__ == '__main__':
