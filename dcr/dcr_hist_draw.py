@@ -172,8 +172,8 @@ param_text = (f"SN: {batch}-{box}-{int(sn)}-{channel}\n"
 plt.text(0.68, 0.75, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
 
 
-plt.bar(bin_centers, bin_contents, width=np.diff(bin_edges), edgecolor='black', alpha=0.7, label='Above Thres.', color='mediumblue', hatch='..')
-plt.bar(bin_centers, bin_contents_neg, width=np.diff(bin_edges_neg), edgecolor='black', alpha=0.8, label='Electronic Noise', color='salmon', hatch='*')
+plt.bar(bin_centers, bin_contents, width=np.diff(bin_edges), edgecolor='black', alpha=0.7, label='Above Thres.', color='mediumblue', hatch='--')
+plt.bar(bin_centers, bin_contents_neg, width=np.diff(bin_edges_neg), edgecolor='black', alpha=0.8, label='Electronic Noise', color='salmon', hatch='**')
 plt.title('DCR Charge Distribution')
 plt.xlabel('Accumulated Charge (pC)')
 plt.ylabel('Events')
