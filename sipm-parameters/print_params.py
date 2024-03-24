@@ -13,7 +13,7 @@ plt.style.use('nature')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Photon Simulation Parameters')
-    parser.add_argument('--input', type=str, default="with_ov_edge_mod.csv", help='the input csv file')
+    parser.add_argument('--input', type=str, default="final_sipm_params.csv", help='the input csv file')
     parser.add_argument('--config', type=str, default="config.yaml", help='the YAML configuration file')
     parser.add_argument('--type', type=str, default="pde", help='the parameter type for plotter')
     parser.add_argument('--ov', type=float, default=-1.0, help='Overvoltage')
@@ -58,8 +58,8 @@ else:
 # Load the CSV file
 df = pd.read_csv(input_path)
 
-df = df[(df['match_x'] <= 1) & (df['match_x'] >= -1)]
-df = df[(df['match_y'] <= 1) & (df['match_y'] >= -1)]
+df = df[(df['match_x'] < 3) & (df['match_x'] > -3)]
+df = df[(df['match_y'] < 3) & (df['match_y'] > -3)]
 
 meancolor="black"
 maxcolor="red"
@@ -70,6 +70,7 @@ labelsize=28
 titlesize=40
 textsize=24
 # Group by 'tsn'
+bad_channels = pd.read_csv("fit_failure.csv")
 grouped = df.groupby('tsn')
 count = len(df['tsn'].unique()) 
 
@@ -88,6 +89,13 @@ if draw_distribution:
         for name, group in grouped:
             vbd_max = group['vbd'].max()
             vbd_min = group['vbd'].min()
+            # Filter out the bad channels for the current tsn.
+            current_bad_channels = bad_channels[bad_channels['tsn'] == name]
+            good_channels_group = group[~group['ch'].isin(current_bad_channels['ch'])]
+            
+            # Calculate vbd_max and vbd_min for good channels only.
+            vbd_max = good_channels_group['vbd'].max()
+            vbd_min = good_channels_group['vbd'].min()
             max_diff = vbd_max - vbd_min
             tsn = np.unique(group['tsn'].to_numpy())[0]
             batch = np.unique(group['batch'].to_numpy())[0]
@@ -102,11 +110,10 @@ if draw_distribution:
             dcr_min = group.loc[group['vbd'] == vbd_min, 'dcr_4.0'].iloc[0]
             gain_max = group.loc[group['vbd'] == vbd_max, 'gain_4.0'].iloc[0]
             gain_min = group.loc[group['vbd'] == vbd_min, 'gain_4.0'].iloc[0]
-            if max_diff > 0.4:
+            if max_diff > 0.3:
                 bad_count += 1
                 data = group['vbd'].to_numpy()
                 channels = group['ch'].to_numpy()
-                data
                 # Calculate Q1 and Q3
                 Q2 = np.percentile(data, 50)
                 print(f"{tsn},{batch},{box},{run},{pos},{vbd_max_ch},{vbd_min_ch},{vbd_max},{vbd_min},{Q2},{pde_max},{pde_min},{dcr_max},{dcr_min},{gain_max},{gain_min}")
@@ -216,7 +223,7 @@ if draw_distribution:
             variable_max[v][i] = group[variable_col].max() * scale
             variable_min[v][i] = group[variable_col].min() * scale
             variable_mean[v][i] = group[variable_col].mean() * scale
-            if group[variable_col].max() > 300 or group[variable_col].mean() > 100:
+            if v == 4.0 and group[variable_col].mean() > 100:
                 bad_count_dcr +=1
                 tsn = np.unique(group['tsn'].to_numpy())[0]
                 batch = np.unique(group['batch'].to_numpy())[0]
@@ -312,8 +319,12 @@ else:
     nuf_list = []
     scale = float(yaml_data[param]['scale'])
     if param != "ap":
+    #if True:
         for i in range(46):
             vol = str(round(2.5 + i * 0.1, 1))
+            ov_value = float(vol)
+            # Filter out rows where 'ov' is outside the 'ov_min' and 'ov_max' range
+            df = df[(df['ov_min'] <= ov_value) & (df['ov_max'] >= ov_value)]
             
             column_name = f'{param}_{vol}'
             column_err_name = f'{param}_{vol}_err'
@@ -346,7 +357,8 @@ else:
     # Create a list of x-ticks that you want to display
     selected_ticks = [str(float(x)/10) for x in range(25, 71, 5)]
     # First plot: Value vs Over Voltage with non-uniformity as error
-    ax1.errorbar(ov_list, value_list, yerr=error_list, fmt='o', color='black', ecolor='black', linewidth=1.5, capsize=5, markersize=6, label=f'{param.upper()} Average')
+    #ax1.errorbar(ov_list, value_list, yerr=error_list, fmt='o', color='black', ecolor='black', linewidth=1.5, capsize=5, markersize=6, label=f'{param.upper()} Average')
+    ax1.errorbar(ov_list, value_list, yerr=error_list, fmt='o', color='black', ecolor='black', linewidth=1.5, capsize=5, markersize=6, label=f'Average')
     if 'hline' in yaml_data[param]:
         if 'maximum' in  yaml_data[param]['hline']:
             ax1.axhline(y=yaml_data[param]['hline']['maximum'], color='r', linestyle='--', label='Maximum', linewidth=2)
@@ -382,7 +394,7 @@ else:
     #ax2.set_xticks([float(x)/10 for x in range(25, 71, 5)])
     #ax2.set_title('Non-uniformity ratio', fontsize=titlesize+6, pad=20)
     ax2.set_xlabel('Over Voltage (V)', fontsize=titlesize, labelpad=15)
-    ax2.set_ylabel('Non-uniformity ratio', fontsize=titlesize, labelpad=15)
+    #ax2.set_ylabel('Non-uniformity ratio', fontsize=titlesize, labelpad=15)
     ax2.grid(True)
     
     # Adjust layout

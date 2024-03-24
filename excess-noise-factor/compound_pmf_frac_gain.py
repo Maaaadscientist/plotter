@@ -16,26 +16,23 @@ def compound_pmf(i, j, mu, lam, p):
     """Calculate the compound PMF for given j, mu, lambda, and p."""
     if i == 0:
         return generalized_poisson_pmf(0, mu, lam)
-    elif i == 1:
-        return generalized_poisson_pmf(1, mu, lam) * binomial_pmf(1, 0, p)
-    elif i >= 2 and j <= i:
+    elif i >= 1 and j <= i:
         return generalized_poisson_pmf(i, mu, lam) * binomial_pmf(i, j, p)
     else:
         print("j should equal to or be less than i")
         return 0.
 
-
 # Start measuring time
 start_time = time.time()
 
 # Calculate the total number of iterations
-ct_step = 0.002
+ct_step = 0.01
 ct_max = 1 - ct_step
-ap_step = 0.001
+ap_step = 0.005
 ap_max = 1 - ap_step
 gain_step = 0.01
 gain_max = 1 - gain_step
-total_iterations = len(np.arange(ct_step, ct_max, ct_step)) * len(np.arange(ap_step, ap_max, ap_step))
+total_iterations = len(np.arange(ct_step, ct_max, ct_step)) * len(np.arange(ap_step, ap_max, ap_step)) * len(np.arange(gain_step, gain_max, gain_step))
 current_iteration = 0
 
 # Example usage
@@ -47,12 +44,16 @@ for single_gain in np.arange(gain_step, gain_max, gain_step):
             mean = 0
             var = 0
             for i in range(100):
-                for j in range(0, i):
+                if i == 0:
+                    mean += compound_pmf(0,0, mu, lambda_, pap)
+                for j in range(i+1):
                     pmf = compound_pmf(i,j, mu, lambda_, pap)
                     mean += pmf * (i + single_gain * j)
             
             for i in range(100):
-                for j in range(0, i):
+                if i == 0:
+                    var += compound_pmf(0,0, mu, lambda_, pap) * (0 - mean)**2
+                for j in range(i+1):
                     pmf = compound_pmf(i,j, mu, lambda_, pap)
                     var += pmf * (i + single_gain *j -mean)**2
     

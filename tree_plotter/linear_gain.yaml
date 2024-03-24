@@ -1,0 +1,93 @@
+tree_path: /Users/wanghanwen/sipm-massive/combined_csv_Dec27.root  
+tree_name: tree
+branch_to_draw:
+   mu_all:
+      name: mu
+      xlabel: mu
+      ylabel: Number of ch
+      title: Initial discharges
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.0
+      upper_edge: 10
+      step: 0.01
+   lambda_all:
+      name: lambda
+      xlabel: $\\lambda$
+      ylabel: Number of ch
+      title: Crosstalk branching ratio
+      axis_sci_format: true
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.0
+      upper_edge: 1
+      step: 0.001
+   fit_status:
+      name: status
+      xlabel: Status
+      ylabel: Number of fit
+      axis_sci_format: true
+      title: Fit Convergence Status from Minuit2
+      selections: match_x == 0 && match_y == 0
+      histtype: bar
+      bin_text: true
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0
+      upper_edge: 5
+      step: 1
+   ap_3V:
+      name: ap
+      xlabel: after pulse
+      ylabel: Number of fit
+      title: after pulsing probability
+      selections: ov > 2.5 && ov < 3.5
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.01
+      upper_edge: 0.33
+      step: 0.005
+   ap_4V:
+      name: ap
+      xlabel: after pulse
+      ylabel: Number of fit
+      title: after pulsing probability
+      selections: ov > 3.5 && ov < 4.5
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.01
+      upper_edge: 0.33
+      step: 0.005
+
+   ap_5V:
+      name: ap
+      xlabel: after pulse
+      ylabel: Number of fit
+      title: after pulsing probability
+      selections: ov > 4.5 && ov < 5.5
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.01
+      upper_edge: 0.33
+      step: 0.005
+   ap_6V:
+      name: ap
+      xlabel: after pulse
+      ylabel: Number of fit
+      title: after pulsing probability
+      selections: ov > 5.5 && ov < 6.5
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.01
+      upper_edge: 0.33
+      step: 0.005
+   ap_7V:
+      name: ap
+      xlabel: after pulse
+      ylabel: Number of fit
+      title: after pulsing probability
+      selections: ov > 6.5 && ov < 7.5
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.01
+      upper_edge: 0.33
+      step: 0.005

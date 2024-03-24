@@ -34,6 +34,7 @@ adc_thresholds = range(0, 1126, 25)  # Adjust the range if necessary
 #dir_path = os.path.abspath(sys.argv[1])
 root_name = "dcr"
 vol_list = [48.5, 49.5, 50.5, 51.5, 52.5, 53.5]
+threshold_ranges = {48.5: (50, 100), 49.5: (75, 150), 50.5: (100, 225), 51.5: (150, 300), 52.5: (175, 400), 53.5: (200, 450)}
 cmap = plt.cm.get_cmap('viridis', len(vol_list))  # Get a colormap with distinct colors
 
 for idx, vol in enumerate(vol_list):
@@ -71,9 +72,37 @@ for idx, vol in enumerate(vol_list):
         channel_data = all_data[all_data['Channel'] == f'Channel_{i}']
         channel_errors = errors[errors['Channel'] == f'Channel_{i}']
         #plt.errorbar(channel_data['ADC_Threshold'], channel_data['Frequency'],yerr=channel_errors['Error'], fmt='o', label=f'Channel {i}')
-        print(i, cmap(idx))
-        plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'o.v. = {vol-46.5}V', color=cmap(idx))
+        #plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'o.v. = {vol-46.5}V', color=cmap(idx))
+        plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'o.v. = {vol-46.5}V')
         #plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'{vol}V')
+    ## Select data within the specified ADC threshold range for each voltage
+    #range_start, range_end = threshold_ranges[vol]
+    #selected_data = all_data[(all_data['ADC_Threshold'] >= range_start) & (all_data['ADC_Threshold'] <= range_end)]
+
+    ## Calculate average frequency and error for a specified channel (e.g., Channel 0)
+    #channel = 'Channel_0'
+    #channel_data = selected_data[selected_data['Channel'] == channel]
+    #average_frequency = channel_data['Frequency'].mean()
+    #standard_error = channel_data['Frequency'].std() / np.sqrt(len(channel_data))
+
+    #print(f"Voltage: {vol}V, Channel: {channel}, Average Frequency: {average_frequency}, Standard Error: {standard_error}")
+    # Select data within the specified ADC threshold range for each voltage
+    range_start, range_end = threshold_ranges[vol]
+    selected_data = all_data[(all_data['ADC_Threshold'] >= range_start) & (all_data['ADC_Threshold'] <= range_end)]
+
+    # Calculate average frequency and error for a specified channel (e.g., Channel 0)
+    channel = 'Channel_0'
+    channel_data = selected_data[selected_data['Channel'] == channel]
+    combined_measurements = channel_data['Frequency']
+
+    average_frequency = combined_measurements.mean()
+    standard_deviation = combined_measurements.std()
+    total_measurements = len(combined_measurements)
+    standard_error = standard_deviation / np.sqrt(total_measurements)
+
+    print(f"{vol-46.5},{average_frequency},{standard_error}")
+
+
 
 plt.xlabel('ADC Threshold')
 plt.ylabel('Rate (Hz / 144mm$^2$)')
@@ -81,4 +110,4 @@ plt.title('Frequency over Different ADC Threshold')
 plt.legend()
 plt.yscale('log')
 plt.grid(axis='y')
-plt.savefig(f"{root_name}.pdf")
+plt.savefig(f"adc_dcr.pdf")

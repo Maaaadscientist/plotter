@@ -13,7 +13,6 @@ textsize=24
 size_marker = 100
 
 # Set global font sizes
-#plt.rcParams['text.usetex'] = False
 plt.rcParams['figure.figsize'] = (20, 15)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
@@ -79,7 +78,6 @@ for run in runs:
         # Get slope and vbd for the linear fit (ensure you have valid data)
         slope = channel_data['slope'].iloc[0]  # Assuming slope is constant per channel
         vbd = channel_data['vbd'].iloc[0]      # Assuming vbd is constant per channel
-        nPoints =np.unique(channel_data['ndf'].to_numpy())[0] # int(channel_data['ndf'].iloc[0]) + 2
         # Update the channel with the maximum vbd
         if vbd > max_vbd:
             max_vbd = vbd
@@ -173,9 +171,9 @@ for run in runs:
         
         #label = f'Ch. {idx+1}' +" $\\mathrm{V}_\\mathrm{bd}$: " + f" {vbd_dict[idx + 1]:.3f}"+" $\\pm$ "+f"{vbd_err_dict[idx + 1]:.3f} (V)"  # Adjust this label as per your requirement
         if temp_norm:
-            label = f'Ch.{idx+1},' +" $\\mathrm{V}^{-50^\\circ\\mathrm{C}}_\\mathrm{breakdown}$: " + f" {vbd_dict[idx + 1]:.3f}"+" $\\pm$ "+f"{vbd_err_dict[idx + 1]:.3f}, " + " Slope: " +f"{slope_dict[idx + 1]:.2f}" #+ " $\\mathrm{N}_\\mathrm{point}$: " +f" {nPoints}"
+            label = f'Ch.{idx+1},' +" $\\mathrm{V}^{-50^\\circ\\mathrm{C}}_\\mathrm{breakdown}$: " + f" {vbd_dict[idx + 1]:.3f}"+" $\\pm$ "+f"{vbd_err_dict[idx + 1]:.3f}, " + " Slope: " +f"{slope_dict[idx + 1]:.2f}"
         else:
-            label = f'Ch.{idx+1},' +" $\\mathrm{V}_\\mathrm{breakdown}$: " + f" {vbd_dict[idx + 1]:.3f}"+" $\\pm$ "+f"{vbd_err_dict[idx + 1]:.3f}, " + " Slope: " +f"{slope_dict[idx + 1]:.2f}" #+ " $\\mathrm{N}_\\mathrm{point}$: " +f" {nPoints}"
+            label = f'Ch.{idx+1},' +" $\\mathrm{V}_\\mathrm{breakdown}$: " + f" {vbd_dict[idx + 1]:.3f}"+" $\\pm$ "+f"{vbd_err_dict[idx + 1]:.3f}, " + " Slope: " +f"{slope_dict[idx + 1]:.2f}"
         
         if idx < total_channels / 2:  # Adjust this condition to split as you like
             first_half_handles.append(custom_handle)

@@ -1,0 +1,87 @@
+tree_path: /Users/wanghanwen/sipm-massive/merged_csv_Dec10.root
+tree_name: tree
+branch_to_draw:
+   chi2:
+      name: chi2
+      xlabel: ${\chi}^2$
+      ylabel: Number of fit
+      title: ${\chi}^2$ distribution
+      histtype: bar
+      selections: match_x == 0 && match_y == 0
+      #bins: 0, 0.5, 1,2,5,10
+      lower_edge: 0.
+      upper_edge: 10.
+      step: 0.05
+   ov_min:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Minimum Real Over Voltage
+      selections: vol==1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 5
+      step: 0.05
+   ov_max:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Maximum Real Over Voltage
+      selections: vol==6
+      lower_edge: 5.
+      upper_edge: 10
+      step: 0.05
+   mu_chi2_geq10:
+      name: mu
+      xlabel:  $\mu$
+      ylabel: Number of Fit
+      title: Mu value of large $\chi^2$
+      selections: chi2 > 10
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.05
+   vbd_large_chi2:
+      name: vbd_err
+      xlabel:  vbd error
+      ylabel: Number of Fit
+      title: vbd error of large $\chi^2$
+      selections: chi2 > 10
+      lower_edge: 0
+      upper_edge: 2
+      step: 0.001
+   stderr_large_chi2:
+      name: stderr
+      xlabel:  vbd error
+      ylabel: Number of Fit
+      title: vbd error of large $\chi^2$
+      selections: chi2 > 10
+      lower_edge: 0
+      upper_edge: 300
+      step: 0.1
+   stderr_small_chi2:
+      name: stderr
+      xlabel:  vbd error
+      ylabel: Number of Fit
+      title: vbd error of large $\chi^2$
+      selections: chi2 < 10
+      lower_edge: 0
+      upper_edge: 300
+      step: 0.1
+   res_large_chi2:
+      name: res_data
+      xlabel:  resolution of data
+      ylabel: Number of Fit
+      title: resolution of large $\chi^2$
+      selections: chi2 > 10
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.01
+   res_small_chi2:
+      name: res_data
+      xlabel:  resolution of data
+      ylabel: Number of Fit
+      title: resolution of large $\chi^2$
+      selections: chi2 < 10
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.01

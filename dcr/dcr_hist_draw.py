@@ -98,7 +98,6 @@ dcr_err = channel_data['dcr_err'].iloc[0]
 batch = channel_data['batch'].iloc[0]
 box = channel_data['box'].iloc[0]
 sn = channel_data['tsn'].iloc[0]
-print(sn)
 vbd_err = channel_data['vbd_err'].iloc[0]
 temp = channel_data['temp'].iloc[0]
 if temp == 0:
@@ -165,11 +164,11 @@ param_text = (f"SN: {batch}-{box}-{int(sn)}-{channel}\n"
               f"E. Noise Events: {negative_events}" + "$\\pm$" +f" {negative_events_err:.1f}" + "$_\\mathrm{(stat.)}$"+"\n"
               f"Net Events: {net_events}" + "$\\pm$" +f" {net_events_err:.1f}" + "$_\\mathrm{(stat.)}$"+"\n"
               f"Time: {time_length:.2f} s\n"
-              "DCR (ch): " + f"{net_events * norm_factor / time_length:.0f}" + "$\\pm$" +f" {net_events_err * norm_factor/time_length:.0f}" + "$_\\mathrm{(stat.)}$"+ "($\\mathrm{Hz}$)"
-              #"\n"
-              #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f" {net_events_err*norm_factor/time_length/144:.1f}" + "$_\\mathrm{(stat.)}$"+ " $\\pm$ "+f"{np.sqrt(dcr_ch_err**2 - (net_events_err*norm_factor/time_length)**2)/144:.1f}" + "$_\\mathrm{(syst.)}$"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)"
+              "DCR (ch): " + f"{net_events * norm_factor / time_length:.0f}" + "$\\pm$" +f" {net_events_err * norm_factor/time_length:.0f}" + "$_\\mathrm{(stat.)}$"+" $\\pm$ "+f"{np.sqrt(dcr_ch_err**2 - (net_events_err*norm_factor/time_length)**2):.1f}" + "$_\\mathrm{(syst.)}$"+ " ($\\mathrm{Hz}$)"
+              "\n"
+              "DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f" {net_events_err*norm_factor/time_length/144:.1f}" + "$_\\mathrm{(stat.)}$"+ " $\\pm$ "+f"{np.sqrt(dcr_ch_err**2 - (net_events_err*norm_factor/time_length)**2)/144:.1f}" + "$_\\mathrm{(syst.)}$"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)"
               )
-plt.text(0.68, 0.75, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
+plt.text(0.65, 0.75, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
 
 
 plt.bar(bin_centers, bin_contents, width=np.diff(bin_edges), edgecolor='black', alpha=0.7, label='Above Thres.', color='mediumblue', hatch='--')
@@ -179,7 +178,7 @@ plt.xlabel('Accumulated Charge (pC)')
 plt.ylabel('Events')
 #plt.ylim(0,200)
 plt.ylim(1,max(bin_contents)*10)
-plt.xlim(0, 100)
+plt.xlim(0, int(max(bin_edges)/10+2)*10)
 plt.yscale('log')
 plt.legend()
 
@@ -192,11 +191,11 @@ plt.xlabel('Accumulated Charge (pC)')
 plt.ylabel('Events')
 #plt.ylim(0,100)
 plt.ylim(1,(max(bin_contents)*10)/2)
-plt.xlim(0, 100)
+plt.xlim(0, int(max(bin_edges)/10+2)*10)
+#plt.xlim(0, 100)
 plt.yscale('log')
 # Define Gaussian parameters
 bin_width = bin_edges[1] - bin_edges[0]
-print(bin_width)
 sigma1 = np.sqrt(sigma0**2 + sigmak**2)
 sigma2 = np.sqrt(sigma0**2 + 2*sigmak**2)
 sigma3 = np.sqrt(sigma0**2 + 3*sigmak**2)
@@ -205,7 +204,7 @@ mean2, amp2, std2 = gain*2, net_events / (1 - 0.5*borel_pmf(1, lambda_)) * borel
 mean3, amp3, std3 = gain*3, net_events / (1 - 0.5*borel_pmf(1, lambda_)) * borel_pmf(3, lambda_) * bin_width , sigma3  # for the second Gaussian
 
 # Generate x values
-x_values = np.linspace(0, 100, 5000)  # Adjust the range and number of points as needed
+x_values = np.linspace(0, 500, 10000)  # Adjust the range and number of points as needed
 
 # Calculate y values for the Gaussians
 y_gauss1 = gaussian(x_values, mean1, amp1, std1)
@@ -226,3 +225,4 @@ plt.legend()
 
 plt.tight_layout()  # Adjust subplots to fit into figure area.
 plt.savefig(f"dcr_hist_run{run}_sn{int(sn)}_ov{vol}_ch{channel}.pdf")
+print(net_events * norm_factor / time_length, dcr_ch_err)

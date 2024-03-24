@@ -7,6 +7,8 @@ branch_to_draw:
       ylabel: Number of fit
       title: ${\chi}^2$ distribution
       histtype: bar
+      selections: match_x == 0 && match_y == 0
+      #bins: 0, 0.5, 1,2,5,10
       lower_edge: 0.
       upper_edge: 10.
       step: 0.05
@@ -29,4 +31,223 @@ branch_to_draw:
       lower_edge: 5.
       upper_edge: 10
       step: 0.05
+   mu_chi2_geq10:
+      name: mu
+      xlabel:  $\mu$
+      ylabel: Number of Fit
+      title: Mu value of large $\chi^2$
+      selections: chi2 > 10
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.05
+   mu_chi2_5-10:
+      name: mu
+      xlabel:  $\mu$
+      ylabel: Number of Fit
+      title: Mu value of large $\chi^2$
+      selections: chi2 > 5 && chi2 < 10
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.05
+   mu_chi2_1-5:
+      name: mu
+      xlabel:  $\mu$
+      ylabel: Number of Fit
+      title: Mu value of large $\chi^2$
+      selections: chi2 < 5 && chi2 > 1
+      lower_edge: 0
+      upper_edge: 3
+      step: 0.05
+   ov_large_chi2:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Minimum Real Over Voltage
+      selections: chi2 > 10
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.1
+   ov_small_chi2:
+      name: ov
+      xlabel: Over Voltage (V)
+      ylabel: Number of channels
+      title: Minimum Real Over Voltage
+      selections: chi2 < 10
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.1
+   enf_large_chi2:
+      name: enf_data
+      xlabel: ENF
+      ylabel: Number of Fit
+      title: Excess Noise Factor
+      selections: chi2 > 10
+      histtype: step
+      lower_edge: 1.
+      upper_edge: 2
+      step: 0.05
+   enf_small_chi2:
+      name: enf_data
+      xlabel: ENF
+      ylabel: Number of Fit
+      title: Excess Noise Factor
+      selections: chi2 < 5
+      histtype: step
+      lower_edge: 1.
+      upper_edge: 2
+      step: 0.05
+   enf_zero_chi2:
+      name: enf_data
+      xlabel: ENF
+      ylabel: Number of Fit
+      title: Excess Noise Factor
+      selections: chi2 == 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 3
+      step: 0.05
+   dcr_large_chi2:
+      name: dcr
+      xlabel: DCR
+      ylabel: Number of Fit
+      title: Dark Counting Rate
+      selections: chi2 >10
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 300
+      step: 1
+   rob_gain_chi2:
+      name: rob_gain
+      xlabel: Gain
+      ylabel: Number of Fit
+      title: Charge Gain
+      selections: chi2 >10
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 100
+      step: 0.5
+   sigma0_0:
+      name: sigma0
+      xlabel: sigma 0
+      ylabel: Number of Fit
+      print_stat: true
+      print_text: 0
+      title: Sigma of 0 p.e. Peak
+      selections: pos == 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma1_0:
+      name: sigma1
+      xlabel: sigma 1
+      ylabel: Number of Fit
+      title: Sigma of 1 p.e. Peak
+      print_stat: true
+      print_text: 0
+      selections: pos == 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma2_0:
+      name: sigma2
+      xlabel: sigma 2
+      ylabel: Number of Fit
+      title: Sigma of 2 p.e. Peak
+      selections: pos == 0
+      print_stat: true
+      print_text: 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+      
+   sigma3_0:
+      name: sigma3
+      xlabel: sigma 3
+      ylabel: Number of Fit
+      title: Sigma of 3 p.e. Peak
+      selections: pos == 0
+      print_stat: true
+      print_text: 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma4_0:
+      name: sigma4
+      xlabel: sigma 4
+      ylabel: Number of Fit
+      title: Sigma of 4 p.e. Peak
+      selections: pos == 0
+      print_stat: true
+      print_text: 0
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
 
+   sigma0:
+      name: sigma0
+      xlabel: sigma 0
+      ylabel: Number of Fit
+      print_stat: true
+      print_text: 1
+      title: Sigma of 0 p.e. Peak
+      selections: pos == 1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma1:
+      name: sigma1
+      xlabel: sigma 1
+      ylabel: Number of Fit
+      title: Sigma of 1 p.e. Peak
+      print_stat: true
+      print_text: 1
+      selections: pos == 1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma2:
+      name: sigma2
+      xlabel: sigma 2
+      ylabel: Number of Fit
+      title: Sigma of 2 p.e. Peak
+      selections: pos == 1
+      print_stat: true
+      print_text: 1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+      
+   sigma3:
+      name: sigma3
+      xlabel: sigma 3
+      ylabel: Number of Fit
+      title: Sigma of 3 p.e. Peak
+      selections: pos == 1
+      print_stat: true
+      print_text: 1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01
+   sigma4:
+      name: sigma4
+      xlabel: sigma 4
+      ylabel: Number of Fit
+      title: Sigma of 4 p.e. Peak
+      selections: pos == 1
+      print_stat: true
+      print_text: 1
+      histtype: step
+      lower_edge: 0.
+      upper_edge: 10
+      step: 0.01

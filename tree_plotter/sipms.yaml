@@ -1,0 +1,59 @@
+tree_path: /Users/wanghanwen/sipm-massive/with_ov_edge_mod.root
+tree_name: tree
+branch_to_draw:
+   pde_4V:
+      name: pde_4_0
+      selections: ov_min < 4.0
+      xlabel: PDE
+      ylabel: Number of SiPMs
+      title: Photon Detection Efficiency (4.0V)
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.4
+      upper_edge: 0.66
+      step: 0.002
+   gain_4V:
+      name: gain_4_0
+      selections: ov_min < 4.0
+      xlabel: Gain ($\times 10^6$)
+      ylabel: Number of SiPMs
+      title: Absolute Gain (4.0V)
+      histtype: bar
+      scientific: true
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 1800000
+      upper_edge: 3000000
+      step: 10000
+   vbd:
+      name: vbd
+      xlabel: $\mathrm{V}_\mathrm{breakdown}$ (V)
+      ylabel: Number of SiPMs
+      title: Breakdown Voltage
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 45
+      upper_edge: 48
+      step: 0.02
+   ct_4V:
+      name: pct_4_0
+      selections: ov_min < 4.0
+      xlabel: Crosstalk
+      ylabel: Number of SiPMs
+      title: Optical Crosstalk Probability (4.0V)
+      histtype: bar
+      #bins: 0, 0.2, 0.4,0.45,0.455,0.46,0.465,0.47,0.475,0.48,0.0.5, 1,2,5,10
+      lower_edge: 0.1
+      upper_edge: 0.22
+      step: 0.002
+   dcr_4V:
+      name: dcr_4_0
+      xlabel: DCR (Hz/$\mathrm{mm}^2$)
+      ylabel: Number of SiPMs
+      selections: ov_min < 4.0
+      title: Dark Counting Rate (4.0V)
+      log: true
+      histtype: bar
+      #bins: 0, 10, 20,41.7,50,60,70,80,90,100,150,200,300,500
+      lower_edge: 0
+      upper_edge: 500
+      step: 2

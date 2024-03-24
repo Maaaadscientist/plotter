@@ -30,7 +30,7 @@ dcr:
    xlabel: DCR (Hz/$\mathrm{mm}^2$)
    ylabel: Number of Tiles
    y_min: 0
-   y_max: 120
+   y_max: 150
    tolerance: 19000
    hline:
       maximum: 41.7
@@ -72,8 +72,8 @@ ap:
    xlabel: After Pulsing
    ylabel: Number of Tiles
    y_min: 0
-   y_max: 0.12
-   tolerance: 0.1
+   y_max: 0.32
+   tolerance: 0.32
    hline:
       maximum: 0.08
       typical: 0.04
@@ -139,6 +139,49 @@ gain:
          lower_edge: 1
          upper_edge: 4
          step: 0.2
+      4.0:
+         lower_edge: 1.8
+         upper_edge: 2.8
+         step: 0.05
+         bins: 0,1.8,1.85,1.9,1.95,2.0,2.05,2.1,2.15,2.2,2.25,2.3,2.35,2.4,2.45,2.5,2.6,2.7,2.8,3.0,10
+alpha:
+   digit: 2
+   xlabel: After Pulsing
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 0.1
+   tolerance: 0.1
+   hline:
+      maximum: 0.08
+      typical: 0.04
+   scale: 1
+   title: After Pulsing Probability
+   legend1_pos: center right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 0.0
+         upper_edge: 0.05
+         step: 0.002
+ap_gain:
+   digit: 2
+   xlabel: After Pulse p.e.
+   ylabel: Number of Tiles
+   y_min: 0
+   y_max: 20
+   tolerance: 10000000
+   #hline:
+   #   minimum: 1
+   #   typical: 4
+   scale: 1
+   title: After Pulse p.e.
+   legend1_pos: center right
+   legend2_pos: upper right
+   voltages:
+      default:
+         lower_edge: 0
+         upper_edge: 20
+         step: 0.5
       4.0:
          lower_edge: 1.8
          upper_edge: 2.8

@@ -170,7 +170,7 @@ for branch in ['sigQ_ch']:
         nbins = int(channel_data['nbins'].iloc[0])
         n_peaks = channel_data['n_peaks'].iloc[0]
         events = channel_data['events'].iloc[0]
-        fit_status = channel_data['status'].iloc[0]
+        fit_status = channel_data['finalfit_status'].iloc[0]
         mean = channel_data['mean'].iloc[0]
         stderr = channel_data['stderr'].iloc[0]
         ndf = channel_data['charge_fit_ndf'].iloc[0]
@@ -230,10 +230,9 @@ for branch in ['sigQ_ch']:
                   "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
                   "$\\alpha$ :" +f" {alpha:.3f}" + " $\\pm$ "+f"{alpha_err:.3f}\n"
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
-                  "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
-                  "AP pe:"+f" {ap_gain/gain:.2f}"+" $\\pm$ "+f"{ap_gain_err/gain:.2f}\n"
-                  
                   "Ped. :"+f" {Ped:.2f}"+" $\\pm$ "+f"{Ped_err:.2f}\n"
+                  "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
+                  "AP p.e.:"+f" {ap_gain/gain:.2f}"+" $\\pm$ "+f"{ap_gain_err/gain:.2f}\n"
                   "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{sigma0_err:.2f}\n"
                   "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{sigmak_err:.2f}"
                   )
@@ -324,9 +323,10 @@ for branch in ['sigQ_ch']:
     axs[1].axhline(-1, color='gray', linestyle='dashed', linewidth=1)  # Add a horizontal line at 0
     axs[1].yaxis.set_major_locator(ticker.MultipleLocator(base=1))  # More granular y-ticks
     
-    axs[1].set_ylim(-3, 3)
+    axs[1].set_ylim(-4, 4)
     # Adjust the second plot
     axs[1].set_xlabel('Accumulated Charge (pC)')
+    axs[0].set_ylabel('Events')
     axs[1].set_ylabel('Pulls')
     #axs[1].legend()
 
