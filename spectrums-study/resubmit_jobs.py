@@ -18,6 +18,9 @@ def find_bottom_level_dirs(directory):
 def check_files_in_dir(directory):
     """Check if there are at least two files in the directory."""
     files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    if len(files) < 30:
+        print(len(files),end='')
+        print('')
     return len(files) >= 30
 
 def check_output_consistency(job_script):
@@ -27,6 +30,7 @@ def check_output_consistency(job_script):
     """
     with open(job_script, 'r') as file:
         lines = file.readlines()
+    print("checking: ", job_script)
 
     for line in lines:
         if line.startswith("$python"):
@@ -50,11 +54,19 @@ output_dir = os.path.abspath(sys.argv[1])
 jobs_dir = os.path.join(output_dir, "jobs")
 outputs_dir = os.path.join(output_dir, "outputs")
 resubmit_dir = os.path.join(output_dir, "jobs_resubmit")
-
+logs_dir = os.path.join(output_dir, "logs")
+if os.path.isdir(resubmit_dir):
+    choice = input("This will delete the jobs_resubmit directory for a clean submission. yes/no\n").lower()
+    if choice == "yes" or choice == 'y':
+        shutil.rmtree(resubmit_dir)
+    else:
+        exit("exiting the script!")
 # Ensure the resubmit directory exists
 if not os.path.isdir(resubmit_dir):
     os.makedirs(resubmit_dir)
 
+if not os.path.isdir(logs_dir):
+    os.makedirs(logs_dir)
 # Check each job script and copy potentially failed jobs to the resubmit directory
 job_scripts = [os.path.join(jobs_dir, js) for js in os.listdir(jobs_dir) if js.endswith('.sh')]
 for job_script in job_scripts:
@@ -113,4 +125,4 @@ if submit_jobs == 'yes':
     print(f"Jobs have been submitted with command: {submit_command}")
 else:
     print("Jobs have not been submitted. You can submit them later with the following command:")
-    print(f"hep_sub -e /dev/null -o /dev/null {wrapper_script_path} -argu \"%{{ProcId}}\" -n {num_job_scripts}")
+    print(f"hep_sub -e {logs_dir} -o {logs_dir} {wrapper_script_path} -argu \"%{{ProcId}}\" -n {num_job_scripts}")

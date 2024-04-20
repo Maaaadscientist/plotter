@@ -16,7 +16,7 @@ import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
-#plt.rcParams['text.usetex'] = False
+plt.rcParams['text.usetex'] = False
 labelsize=28
 titlesize=40
 textsize=24

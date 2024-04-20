@@ -21,7 +21,7 @@ textsize=24
 size_marker = 100
 
 # Set global font sizes
-#plt.rcParams['text.usetex'] = False
+plt.rcParams['text.usetex'] = False
 plt.rcParams['figure.figsize'] = (25, 15)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
@@ -170,7 +170,6 @@ for branch in ['sigQ_ch']:
         nbins = int(channel_data['nbins'].iloc[0])
         n_peaks = channel_data['n_peaks'].iloc[0]
         events = channel_data['events'].iloc[0]
-        fit_status = channel_data['status'].iloc[0]
         mean = channel_data['mean'].iloc[0]
         stderr = channel_data['stderr'].iloc[0]
         ndf = channel_data['charge_fit_ndf'].iloc[0]
