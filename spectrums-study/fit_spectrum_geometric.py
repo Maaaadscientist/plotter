@@ -75,6 +75,8 @@ def sigma_n_i(n, i, sigma0, sigmak, sigmaAp):
     return np.sqrt(n * sigmak**2 + sigma0**2)
 def bino(n, i, alpha):
     return 
+def geometric( i,n, alpha):
+    return (1-alpha*n)*n**i  * alpha**i
 # Define the PDF
 def compound_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
     total_pdf = np.zeros_like(Q)
@@ -83,29 +85,6 @@ def compound_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
     return total_pdf
 
 def compound_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak, sigmaAp, n_max):
-    total_pdf = np.zeros_like(Q)
-    for n in range(n_max + 1):
-        for i in range(n+1):
-            total_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain, AP_Gain)
-    ap_pdf = np.zeros_like(Q)
-    for n in range(1, n_max + 1):
-        for i in range(1,n+1):
-            ap_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain,  AP_Gain)
-    gp_pdf = np.zeros_like(Q)
-    for n in range(0, n_max + 1):
-        gp_pdf += poisson(n, mu, lambda_) * binom.pmf(0, n, alpha) * gauss_ap(Q, n, 0, sigma_n_i(n, 0, sigma0, sigmak, sigmaAp), Ped, Gain , AP_Gain)
-    return total_pdf, ap_pdf, gp_pdf
-
-def geometric( i,n, alpha):
-    return (1-alpha*n)*n**i  * alpha**i
-# Define the PDF
-def geometric_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
-    total_pdf = np.zeros_like(Q)
-    for n in range(n_max + 1):
-        total_pdf += poisson(n, mu, lambda_) * gauss(Q, n, sigma_n(n, sigma0, sigmak), Ped, Gain)
-    return total_pdf
-
-def geometric_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak, sigmaAp, n_max):
     total_pdf = np.zeros_like(Q)
     for n in range(n_max + 1):
         for i in range(20):
@@ -118,6 +97,7 @@ def geometric_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak,
     for n in range(0, n_max + 1):
         gp_pdf += poisson(n, mu, lambda_) * geometric(0, n, alpha) * gauss_ap(Q, n, 0, sigma_n_i(n, 0, sigma0, sigmak, sigmaAp), Ped, Gain , AP_Gain)
     return total_pdf, ap_pdf, gp_pdf
+
 # Open the ROOT file
 input_path = os.path.abspath(sys.argv[1])
 csv_path = os.path.abspath(sys.argv[2])
@@ -223,7 +203,7 @@ for branch in ['sigQ_ch']:
     data = np.sort(data)
 
     print(len(data), int(len(data) * 0.05), data[int(len(data) * 0.01)])
-    upper_edge = data[int(len(data) * 0.997)]
+    upper_edge = data[int(len(data) * 0.9999)]
     amp_max = upper_edge
     amp_min = lower_edge
     #nBins = 800
@@ -268,7 +248,7 @@ for branch in ['sigQ_ch']:
                   "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
                   "$\\alpha$ :" +f" {alpha:.3f}" + " $\\pm$ "+f"{alpha_err:.3f}\n"
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
-                  "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
+                  "Gain :"+f" {gain:.3f}"+" $\\pm$ "+f"{gain_err:.3f}\n"
                   "AP pe:"+f" {ap_gain/gain:.3f}"+" $\\pm$ "+f"{ap_gain_err/gain:.3f}\n"
                   
                   "Ped. :"+f" {Ped:.2f}"+" $\\pm$ "+f"{Ped_err:.2f}\n"
@@ -298,12 +278,8 @@ for branch in ['sigQ_ch']:
     #pdf_values_norm = compound_pdf(bins, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     #pdf_values = compound_pdf(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     # Calculate the PDF
-    if vol <= 2:
-        pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = compound_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-        pdf_values, ap_pdf_values, gp_pdf_values = compound_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-    else:
-        pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = geometric_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-        pdf_values, ap_pdf_values, gp_pdf_values = geometric_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = compound_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    pdf_values, ap_pdf_values, gp_pdf_values = compound_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
     #pdf_values = compound_pdf_ap(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     # Normalize the PDF to a probability
     bin_widths = np.diff(Q_values)
