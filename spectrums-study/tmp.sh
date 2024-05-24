@@ -1,3 +1,3 @@
 #!/bin/bash
 python=$(which python)
-$python /Users/allen/codes/plotter/spectrums-study/fit_spectrum.py ~/codes/sipm-massive/main_run_0458/main_run_0458_ov_6.00_sipmgr_10_tile.root ../../sipm-massive/high_k.csv 14 14-458-10-6
+$python /Users/allen/codes/plotter/spectrums-study/plot_waveforms.py /Volumes/ExtDisk-1/main-runs/main/main_run_0458/root/main_run_0458_ov_5.00_sipmgr_02_tile.root final.csv 8 8-458-2-5

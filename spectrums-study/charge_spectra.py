@@ -1,3 +1,4 @@
+#! /opt/homebrew/bin/python3.12
 import os
 import sys
 import re
@@ -6,32 +7,39 @@ import uproot
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import find_peaks, gaussian
+from scipy.signal import find_peaks
+from scipy.signal.windows import gaussian
 from scipy.ndimage import gaussian_filter1d
 import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
+scale = 1
 labelsize=28
 titlesize=40
 textsize=24
 size_marker = 100
 
+labelsize *= scale
+titlesize*= scale
+textsize*=scale
+size_marker*=scale
 # Set global font sizes
-plt.rcParams['text.usetex'] = False
-plt.rcParams['figure.figsize'] = (25, 15)
+plt.rcParams['text.usetex'] = True
+plt.rcParams['figure.figsize'] = (24,12)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
 plt.rcParams['axes.titlesize'] = titlesize
 plt.rcParams['xtick.labelsize'] = labelsize
 plt.rcParams['ytick.labelsize'] = labelsize
 plt.rcParams['legend.fontsize'] = labelsize
-plt.rcParams['errorbar.capsize'] = 3
-plt.rcParams['lines.markersize'] = 5  # For example, 8 points
+plt.rcParams['errorbar.capsize'] = 4
+plt.rcParams['lines.markersize'] = 6  # For example, 8 points
 plt.rcParams['lines.linewidth'] = 2 # For example, 2 points
 # Set global parameters using rcParams
 plt.rcParams['axes.titlepad'] = 20  # Padding above the title
 plt.rcParams['axes.labelpad'] = 15  # Padding for both x and y axis labels
+
 def fetch_file_info(filename):
     pattern_name = r'(\w+)_run_(\w+)_ov_(\d+).00_sipmgr_(\d+)_(\w+)'
     name_match = re.match(pattern_name, filename)
@@ -58,8 +66,6 @@ output_path = os.getcwd()
 if len(sys.argv) > 4:
     output_path = os.path.abspath(sys.argv[4])
 run_path = "run_" + str(run).zfill(4)
-if not os.path.isdir(output_path+f'/{run_path}'):
-    os.makedirs(output_path +f'/{run_path}')
 df = pd.read_csv(csv_path)
 channel_data = df[(df['pos'] == pos) & (df['run'] == run) & (df['vol'] == vol) & (df['ch'] == channel)]
 
@@ -102,13 +108,40 @@ baseline_err = np.sqrt(baseline_fl + baseline_sigma)
 tree = uproot.open(f"{input_path}:signal")
 # Convert branch to numpy array
 for branch in ['sigQ_ch', 'baselineQ_ch']:
+
+
+
+    #nbins = int(channel_data['nbins'].iloc[0])
+    #data = tree[f"{branch}{pos}"].array(library="np")
+    #data = np.sort(data)
+
+    #print(len(data), int(len(data) * 0.05), data[int(len(data) * 0.01)])
+    #upper_edge = data[int(len(data) * 0.998)]
+    #lower_edge = data[int(len(data) * 0)]
+    #amp_step = 0.5#(amp_max - amp_min) / nBins
+    #amp_max = upper_edge
+    #amp_min = lower_edge
+    #nBins = int((amp_max - amp_min) / amp_step)
+    ##print(nBins)
+    #amp_gain = 42/ 2 / 5.28 * (vol + 2)
+    ##nBins = 800
+    ##nBins = nbins #int((amp_max - amp_min) / amp_step)
+    ## Creating a histogram from the 'data' array
+    ## Create bin edges array
+    #bins = np.linspace(lower_edge, upper_edge, nbins + 1)
+    ## Calculate the width of each bin
+    #hist_counts, bin_edges = np.histogram(data, bins=bins)
+
+#########################################################
     data = tree[f"{branch}{pos}"].array(library="np")
+    data = np.sort(data)
+    upper_edge = data[int(len(data) * 0.998)]
     amp_max = data.max()
     amp_min = data.min()
     #nBins = 800
-    amp_step = 0.5#(amp_max - amp_min) / nBins
+    amp_step = 1#(amp_max - amp_min) / nBins
     nBins = int((amp_max - amp_min) / amp_step)
-    print(nBins)
+    #print(nBins)
     amp_gain = 42/ 2 / 5.28 * (vol + 2)
     
     # Creating a histogram from the 'data' array
@@ -156,7 +189,7 @@ for branch in ['sigQ_ch', 'baselineQ_ch']:
     # Assuming there's only one row that matches, otherwise you might need to handle multiple rows
     if not channel_data.empty:
         #baseline_position = channel_data['bl'].iloc[0]  # .iloc[0] accesses the first row of the filtered data
-        baseline_rms = channel_data['bl_rms'].iloc[0] * 45
+        #baseline_rms = channel_data['bl_rms'].iloc[0] * 45
         baseline_position = baseline * 45#channel_data['bl'].iloc[0]  # .iloc[0] accesses the first row of the filtered data
         mu =  channel_data['mu'].iloc[0]
         ref_mu =  channel_data['ref_mu'].iloc[0]
@@ -185,20 +218,19 @@ for branch in ['sigQ_ch', 'baselineQ_ch']:
     param_text = (f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
                   "Events:"+f" {events}\n"
                   "$\\mathrm{Q}_\\mathrm{\\,baseline}$:"+f" {baseline_position:.2f} (pC)\n"
-                  "$\\sigma^\\mathrm{Q}_\\mathrm{\\,baseline}$:"+f" {baseline_rms:.2f} (pC)\n"
-                  "Recognised Peaks :"+f" {len(peak_positions)}\n"
-                  "\n"
+                  #"$\\sigma^\\mathrm{Q}_\\mathrm{\\,baseline}$:"+f" {baseline_rms:.2f} (pC)\n"
+                  "Recognised Peaks :"+f" {len(peak_positions)}")
                   #"$\\mathrm{V}_\\mathrm{bd}$ :"+f" {vbd:.2f}"+" $\\pm$ "+f"{vbd_err:.3f} (V)\n"
-                  "$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
-                  "$\\mathrm{V}_\\mathrm{bias}$ :"+f" {over_vol:.2f}"+" $\\pm$ "+f"{vbd_err:.2f} (V)")
+                  #"$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
+                  #"$\\mathrm{V}_\\mathrm{bias}$ :"+f" {over_vol:.2f}"+" $\\pm$ "+f"{vbd_err:.2f} (V)")
 
                   #"$\\mu$ :"+f" {mu:.3f}"+" $\\pm$ "+f"{mu_err:.3f}\n"
                   #"$\\mu_\\mathrm{ref.}$ :"+f" {ref_mu:.3f}"+" $\\pm$ "+f"{ref_mu_err:.3f}\n"
                   #"$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
                   #"Charge Gain :"+f" {avg_gain:.2f}"+" $\\pm$ "+f"{avg_gain_err:.2f} (pC)\n"
-    if branch != 'baselineQ_ch':
-        param_text += "\nCharge Gain :"+f" {avg_gain:.2f} (pC)"
+    #if branch != 'baselineQ_ch':
+    #    param_text += "\nCharge Gain :"+f" {avg_gain:.2f} (pC)"
     
     # Calculate the statistical error (standard deviation) for each data point
     errors = np.sqrt(spectrum_y)
@@ -213,15 +245,15 @@ for branch in ['sigQ_ch', 'baselineQ_ch']:
         title_suffix = "Baseline Range"
     else:
         title_suffix = "LED Signal Range"
-    plt.title(f'Charge Spectrum ({title_suffix})')
+    #plt.title(f'Charge Spectrum ({title_suffix})')
     plt.legend()
     # Set the yscale to 'log'
     plt.yscale('log')
     plt.xlabel('Accumulated Charge (pC)')
-    plt.ylabel('Number of Events')
+    plt.ylabel('Events')
     if branch != 'baselineQ_ch':
-        plt.savefig(f"{output_path}/{run_path}/charge_spectrum_light_{vol}V.pdf")
+        plt.savefig(f"charge_spectrum_light_{vol}V.pdf")
     else:
-        plt.savefig(f"{output_path}/{run_path}/charge_spectrum_dark_{vol}V.pdf")
+        plt.savefig(f"charge_spectrum_dark_{vol}V.pdf")
     plt.clf()
 

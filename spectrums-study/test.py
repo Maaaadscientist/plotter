@@ -11,7 +11,7 @@ run_pos_csv = sys.argv[3]
 #run_pos_csv = "/Users/allen/codes/sipm-massive/merged.csv"
 root_path = "/junofs/users/wanghanwen/main-runs/main"#os.getcwd()#""
 root_path = "/Volumes/ExtDisk-1/main-runs/main"
-root_path =  "~/codes/sipm-massive/main_run_0458"
+#root_path =  "~/codes/sipm-massive/main_run_0458"
 script_path = os.getcwd()
 
 # Read the run and pos CSV file
@@ -40,7 +40,7 @@ with open(script_name, 'w') as file:
     #file.write('sleep 2\n')
     file.write('python=$(which python)\n')
 
-    cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
+    cmd = (f"$python {script_path}/{scr} {root_path}/main_run_{str(run).zfill(4)}/root/main_run_{str(run).zfill(4)}_ov_{vol}.00_sipmgr_{str(ch).zfill(2)}_tile.root "
            f"{run_pos_csv} {pos} {pos}-{run}-{ch}-{vol}\n")
     file.write(cmd)
 
