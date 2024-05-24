@@ -1,3 +1,5 @@
+#! /opt/homebrew/bin/python3.12
+
 import os
 import sys
 import re
@@ -16,13 +18,15 @@ import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
-#plt.rcParams['text.usetex'] = False
+plt.rcParams['text.usetex'] = True
 labelsize=28
 titlesize=40
 textsize=24
 # Choose a base colormap
 #base_cmap = plt.cm.magma
-base_cmap = plt.cm.plasma
+#base_cmap = plt.cm.rainbow
+base_cmap = plt.cm.viridis
+#base_cmap = plt.cm.plasma
 
 # Create a new colormap from the base one
 # ListedColormap takes a list of colors or a colormap object
@@ -57,8 +61,6 @@ output_path = os.getcwd()
 if len(sys.argv) > 4:
     output_path = os.path.abspath(sys.argv[4])
 run_path = "run_" + str(run).zfill(4)
-if not os.path.isdir(output_path+f'/{run_path}'):
-    os.makedirs(output_path +f'/{run_path}')
 pos = selected_channel
 channel_data = df[(df['pos'] == selected_channel) & (df['run'] == run) & (df['vol'] == vol) & (df['ch'] == channel)]
 hist_name = f"waveform_ch{selected_channel}"
@@ -106,7 +108,7 @@ tree = uproot.open(f"{input_path}:signal")
 data = tree[f"sigAmp_ch{pos}"].array(library="np")
 y_max = data.max()
 y_min = data.min() - 5
-for x_min, x_max in zip([400,1250],[500,1350]):
+for x_min, x_max in zip([400,1150],[500,1400]):
     if x_min == 400:
         category = "dark"
         y_min += 3
@@ -114,7 +116,7 @@ for x_min, x_max in zip([400,1250],[500,1350]):
         category = "light"
     #y_min, y_max = 70, 100  # define your range here
     z_min, z_max = 0, 2500  # define your Z range here
-    #x_min, x_max = 1250, 1350  # define your range here
+    x_min, x_max = 1200, 1400  # define your range here
     
     # Find bin numbers corresponding to the y range
     y_bin_min = hist.GetYaxis().FindBin(y_min)
@@ -183,7 +185,7 @@ for x_min, x_max in zip([400,1250],[500,1350]):
     else:
         print(f"No data found for Channel {selected_channel}")
     
-    plt.figure(figsize=(20, 15))
+    plt.figure(figsize=(24, 12))
     
     norm = Normalize(vmin=z_min, vmax=z_max)
     
@@ -195,15 +197,15 @@ for x_min, x_max in zip([400,1250],[500,1350]):
                   "Events:"+f" {events}\n"
                   "$\\mathrm{Amp}_\\mathrm{\\,baseline}$:"+f" {baseline_position:.3f} (mV)\n"
                   "$\\mathrm{RMS}_\\mathrm{\\,baseline}$:"+f" {baseline_rms:.3f} (mV)\n"
-                  "Recognised Peaks :"+f" {n_peaks}\n"
+                  #"Recognised Peaks :"+f" {n_peaks}\n"
                   "\n"
                   "$\\mathrm{V}_\\mathrm{bd}$ :"+f" {vbd:.2f}"+" $\\pm$ "+f"{vbd_err:.3f} (V)\n"
-                  "$\\mathrm{V}_\\mathrm{bias}$ :"+f" {over_vol:.2f}"+" $\\pm$ "+f"{vbd_err:.3f} (V)\n"
-                  "$\\mu$ :"+f" {mu:.3f}"+" $\\pm$ "+f"{mu_err:.3f}\n"
-                  "$\\mu_\\mathrm{ref.}$ :"+f" {ref_mu:.3f}"+" $\\pm$ "+f"{ref_mu_err:.3f}\n"
-                  "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
-                  "DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
-                  "Gain :"+f" {gain:.3f} (pC)")
+                  "$\\mathrm{V}_\\mathrm{bias}$ :"+f" {over_vol:.2f}"+" $\\pm$ "+f"{vbd_err:.3f} (V)")
+                  #"$\\mu$ :"+f" {mu:.3f}"+" $\\pm$ "+f"{mu_err:.3f}\n"
+                  #"$\\mu_\\mathrm{ref.}$ :"+f" {ref_mu:.3f}"+" $\\pm$ "+f"{ref_mu_err:.3f}\n"
+                  #"$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
+                  #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
+                  #"Gain :"+f" {gain:.3f} (pC)")
     plt.text(0.62, 0.96, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
     
     plt.tick_params(axis='x', which='major', pad=10)  # Increase padding for x-axis labels
@@ -214,13 +216,16 @@ for x_min, x_max in zip([400,1250],[500,1350]):
     # Create the heatmap and colorbar
     cbar = plt.colorbar()
     cbar.ax.tick_params(labelsize=labelsize)  # Set the font size here
-    if category == 'light': 
-        plt.title(f"Waveform Heat Map (LED Signal Range)", fontsize=titlesize, pad=25)
-    else:
-        plt.title(f"Waveform Heat Map (Dark Range)", fontsize=titlesize, pad=25)
+    cbar.set_label('Events', fontsize=labelsize)  # Add label to the colorbar
+
+    #if category == 'light': 
+    #    plt.title(f"Waveform Heat Map (LED Signal Range)", fontsize=titlesize, pad=25)
+    #else:
+    #    plt.title(f"Waveform Heat Map (Dark Range)", fontsize=titlesize, pad=25)
     plt.xlabel('Time (8 ns)', fontsize=labelsize, labelpad=15)
     plt.ylabel('Amplitude (mV)', fontsize=labelsize, labelpad=15)
-    plt.savefig(f"{output_path}/{run_path}/waveform_{category}_{vol}V.pdf")
+    plt.ylim(75,125)
+    plt.savefig(f"waveform_heatmap.pdf")
     plt.clf()
     
 file.Close()

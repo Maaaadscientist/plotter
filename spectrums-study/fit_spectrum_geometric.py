@@ -23,7 +23,7 @@ import scienceplots
 plt.style.use('science')
 plt.style.use('nature')
 
-scale = 1
+scale = 0.5
 labelsize=28
 titlesize=40
 textsize=24
@@ -34,8 +34,8 @@ titlesize*= scale
 textsize*=scale
 size_marker*=scale
 # Set global font sizes
-plt.rcParams['text.usetex'] = True
-plt.rcParams['figure.figsize'] = (24,15)
+plt.rcParams['text.usetex'] = False
+plt.rcParams['figure.figsize'] = (12,8)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
 plt.rcParams['axes.titlesize'] = titlesize
@@ -43,8 +43,8 @@ plt.rcParams['xtick.labelsize'] = labelsize
 plt.rcParams['ytick.labelsize'] = labelsize
 plt.rcParams['legend.fontsize'] = labelsize
 plt.rcParams['errorbar.capsize'] = 4
-plt.rcParams['lines.markersize'] = 6  # For example, 8 points
-plt.rcParams['lines.linewidth'] = 2 # For example, 2 points
+plt.rcParams['lines.markersize'] = 3  # For example, 8 points
+plt.rcParams['lines.linewidth'] = 1.5 # For example, 2 points
 # Set global parameters using rcParams
 plt.rcParams['axes.titlepad'] = 20  # Padding above the title
 plt.rcParams['axes.labelpad'] = 15  # Padding for both x and y axis labels
@@ -75,6 +75,8 @@ def sigma_n_i(n, i, sigma0, sigmak, sigmaAp):
     return np.sqrt(n * sigmak**2 + sigma0**2)
 def bino(n, i, alpha):
     return 
+def geometric( i,n, alpha):
+    return (1-alpha*n)*n**i  * alpha**i
 # Define the PDF
 def compound_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
     total_pdf = np.zeros_like(Q)
@@ -83,29 +85,6 @@ def compound_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
     return total_pdf
 
 def compound_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak, sigmaAp, n_max):
-    total_pdf = np.zeros_like(Q)
-    for n in range(n_max + 1):
-        for i in range(n+1):
-            total_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain, AP_Gain)
-    ap_pdf = np.zeros_like(Q)
-    for n in range(1, n_max + 1):
-        for i in range(1,n+1):
-            ap_pdf += poisson(n, mu, lambda_) * binom.pmf(i, n, alpha) * gauss_ap(Q, n, i, sigma_n_i(n, i, sigma0, sigmak, sigmaAp), Ped, Gain,  AP_Gain)
-    gp_pdf = np.zeros_like(Q)
-    for n in range(0, n_max + 1):
-        gp_pdf += poisson(n, mu, lambda_) * binom.pmf(0, n, alpha) * gauss_ap(Q, n, 0, sigma_n_i(n, 0, sigma0, sigmak, sigmaAp), Ped, Gain , AP_Gain)
-    return total_pdf, ap_pdf, gp_pdf
-
-def geometric( i,n, alpha):
-    return (1-alpha*n)*n**i  * alpha**i
-# Define the PDF
-def geometric_pdf(Q, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max):
-    total_pdf = np.zeros_like(Q)
-    for n in range(n_max + 1):
-        total_pdf += poisson(n, mu, lambda_) * gauss(Q, n, sigma_n(n, sigma0, sigmak), Ped, Gain)
-    return total_pdf
-
-def geometric_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak, sigmaAp, n_max):
     total_pdf = np.zeros_like(Q)
     for n in range(n_max + 1):
         for i in range(20):
@@ -118,6 +97,7 @@ def geometric_pdf_ap(Q, Ped, Gain, AP_Gain,  mu, lambda_, alpha, sigma0, sigmak,
     for n in range(0, n_max + 1):
         gp_pdf += poisson(n, mu, lambda_) * geometric(0, n, alpha) * gauss_ap(Q, n, 0, sigma_n_i(n, 0, sigma0, sigmak, sigmaAp), Ped, Gain , AP_Gain)
     return total_pdf, ap_pdf, gp_pdf
+
 # Open the ROOT file
 input_path = os.path.abspath(sys.argv[1])
 csv_path = os.path.abspath(sys.argv[2])
@@ -132,6 +112,8 @@ output_path = os.getcwd()
 if len(sys.argv) > 4:
     output_path = os.path.abspath(sys.argv[4])
 run_path = "run_" + str(run).zfill(4)
+if not os.path.isdir(output_path+f'/{run_path}'):
+    os.makedirs(output_path +f'/{run_path}')
 df = pd.read_csv(csv_path)
 channel_data = df[(df['pos'] == pos) & (df['run'] == run) & (df['vol'] == vol) & (df['ch'] == channel)]
 
@@ -187,12 +169,12 @@ for branch in ['sigQ_ch']:
         sigmak_err = sigma0_err#channel_data['sigmak_err'].iloc[0]
         gain = channel_data['gain'].iloc[0]
         gain_err = channel_data['gain_err'].iloc[0]
-        overvol =  channel_data['ov'].iloc[0] 
+        #overvol =  channel_data['ov'].iloc[0] 
         vol =  channel_data['vol'].iloc[0] 
-        vbd_err =  channel_data['vbd_err'].iloc[0]  
-        batch =  channel_data['batch'].iloc[0] 
-        box =  channel_data['box'].iloc[0] 
-        tsn =  int(channel_data['tsn'].iloc[0]) 
+        #vbd_err =  channel_data['vbd_err'].iloc[0]  
+        #batch =  channel_data['batch'].iloc[0] 
+        #box =  channel_data['box'].iloc[0] 
+        #tsn =  int(channel_data['tsn'].iloc[0]) 
         alpha = channel_data['alpha'].iloc[0]
         alpha_err = channel_data['alpha_err'].iloc[0]
         ap_gain = channel_data['ap_gain'].iloc[0]
@@ -221,7 +203,7 @@ for branch in ['sigQ_ch']:
     data = np.sort(data)
 
     print(len(data), int(len(data) * 0.05), data[int(len(data) * 0.01)])
-    upper_edge = data[int(len(data) * 0.998)]
+    upper_edge = data[int(len(data) * 0.9999)]
     amp_max = upper_edge
     amp_min = lower_edge
     #nBins = 800
@@ -266,22 +248,17 @@ for branch in ['sigQ_ch']:
                   "$\\lambda$ :"+f" {lambda_:.3f}"+" $\\pm$ "+f"{lambda_err:.3f}\n"
                   "$\\alpha$ :" +f" {alpha:.3f}" + " $\\pm$ "+f"{alpha_err:.3f}\n"
                   #"DCR:"+f" {dcr:.1f}"+" $\\pm$ "+f"{dcr_err:.1f}"+" ($\\mathrm{Hz}/\\mathrm{mm}^2$)\n"
-<<<<<<< HEAD
-=======
-                  "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
+                  "Gain :"+f" {gain:.3f}"+" $\\pm$ "+f"{gain_err:.3f}\n"
                   "AP pe:"+f" {ap_gain/gain:.3f}"+" $\\pm$ "+f"{ap_gain_err/gain:.3f}\n"
                   
->>>>>>> server
                   "Ped. :"+f" {Ped:.2f}"+" $\\pm$ "+f"{Ped_err:.2f}\n"
-                  "Gain :"+f" {gain:.2f}"+" $\\pm$ "+f"{gain_err:.2f}\n"
-                  "AP p.e.:"+f" {ap_gain/gain:.2f}"+" $\\pm$ "+f"{ap_gain_err/gain:.2f}\n"
                   "$\\sigma_0$ :"+f" {sigma0:.2f}"+" $\\pm$ "+f"{sigma0_err:.2f}\n"
                   "$\\sigma_k$ :"+f" {sigmak:.2f}"+" $\\pm$ "+f"{sigmak_err:.2f}"
                   )
-    param_top_text = (f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
+    param_top_text = (#f"SN: {batch}-{box}-{int(tsn)}-{channel}\n"
                   "Events: "+f"{events}\n"
                   "$\\mathrm{V}_\\mathrm{preset}$ :" +f" {vol} (V)\n"
-                  "$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.3f}\n"
+                  #"$\\mathrm{V}_\\mathrm{bias}$ : " +f"{overvol:0.2f}" +" $\\pm$ "+f"{vbd_err:.2f}\n"
                   "Mean: " +f"{mean:0.2f}\n"
                   "Std. Dev.: " +f"{stderr:0.2f}\n"
                    "FD bin width: " +f"{FD_bin_width:.3f}\n"
@@ -301,12 +278,8 @@ for branch in ['sigQ_ch']:
     #pdf_values_norm = compound_pdf(bins, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     #pdf_values = compound_pdf(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     # Calculate the PDF
-    if vol <= 2:
-        pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = compound_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-        pdf_values, ap_pdf_values, gp_pdf_values = compound_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-    else:
-        pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = geometric_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
-        pdf_values, ap_pdf_values, gp_pdf_values = geometric_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    pdf_values_norm, ap_pdf_values_norm, gp_pdf_values_norm = compound_pdf_ap(bins, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
+    pdf_values, ap_pdf_values, gp_pdf_values = compound_pdf_ap(Q_values, Ped, Gain, ap_gain, mu, lambda_, alpha,  sigma0, sigmak,sigmaAp, n_max)
     #pdf_values = compound_pdf_ap(Q_values, Ped, Gain, mu, lambda_, sigma0, sigmak, n_max)
     # Normalize the PDF to a probability
     bin_widths = np.diff(Q_values)
@@ -332,7 +305,7 @@ for branch in ['sigQ_ch']:
     pulls = residuals / residual_errors 
 
     # Create a figure and a set of subplots
-    fig, axs = plt.subplots(2, 1, gridspec_kw={'height_ratios': [6, 2]})
+    fig, axs = plt.subplots(2, 1, gridspec_kw={'height_ratios': [5, 2]})
     
      # Get the current color cycle
     default_color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
@@ -346,17 +319,17 @@ for branch in ['sigQ_ch']:
     axs[0].plot(Q_values, scaled_ap_pdf, label="AP", alpha=0.7, linestyle=':', zorder=2) # default color = #0C5DA5
     axs[0].plot(Q_values, scaled_gp_pdf, label="GP", alpha=0.7, linestyle='--',zorder=1) # default color = #0C5DA5
     #axs[0].plot(Q_values, scaled_pdf, label="Fit", color='mediumblue', alpha=0.8, zorder=1, linewidth=3)
-    axs[0].errorbar(spectrum_x, spectrum_y, yerr=errors, fmt='o', color='black', ecolor='black', label='Data', alpha=0.9, zorder=2)#, markerfacecolor='none')
+    axs[0].errorbar(spectrum_x, spectrum_y, yerr=errors, fmt='o', color='black', ecolor='black', label='Data', alpha=0.7, zorder=2)
     axs[0].set_yscale('log')
-    axs[0].set_ylim(0.1, 1e4)
-    #axs[0].set_title(f'Charge Spectrum Fit of SiPM {pos}-{channel} at {vol}V')
+    axs[0].set_ylim(0.01, 1e5)
+    axs[0].set_title(f'Charge Spectrum Fit of SiPM {pos}-{channel} at {vol}V')
     #axs[0].text(0.5, 0.25, param_text, transform=plt.gca().transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
-    axs[0].text(0.65, 0.95, param_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
-    axs[0].text(0.85, 0.95, param_top_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='paleturquoise', alpha=0.5), fontsize=textsize)
+    axs[0].text(0.8, 0.95, param_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=textsize)
+    axs[0].text(0.6, 0.95, param_top_text, transform=axs[0].transAxes, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='paleturquoise', alpha=0.5), fontsize=textsize)
     #axs[0].text(0.5,0.5,param_text,fontsize=textsize, color='blue', verticalalignment='center', horizontalalignment='center')
     common_x_min = min(spectrum_x)  # Adjust as necessary
     common_x_max = max(spectrum_x)  # Adjust as necessary
-    axs[0].legend(loc=(0.45,0.72))
+    axs[0].legend(loc=(0.4,0.68))
     
     axs[0].set_xlim(common_x_min, common_x_max)
     axs[1].set_xlim(common_x_min, common_x_max)
@@ -369,12 +342,10 @@ for branch in ['sigQ_ch']:
     axs[1].axhline(-1, color='gray', linestyle='dashed', linewidth=1)  # Add a horizontal line at 0
     axs[1].yaxis.set_major_locator(ticker.MultipleLocator(base=1))  # More granular y-ticks
     
-    axs[1].set_ylim(-4, 4)
+    axs[1].set_ylim(-3, 3)
     # Adjust the second plot
     axs[1].set_xlabel('Accumulated Charge (pC)')
-    axs[0].set_ylabel('Events')
     axs[1].set_ylabel('Pulls')
-    axs[0].set_ylabel('Events')
     #axs[1].legend()
 
     # Adjust layout
@@ -394,7 +365,7 @@ for branch in ['sigQ_ch']:
     #plt.ylim(0.1,1e4)
     #plt.xlabel('Accumulated Charge (pC)')
     #plt.ylabel('Number of Events')
-    plt.savefig(f"charge_fit_{tsn}_{channel}_{vol}V.pdf")
-    #plt.show()
-    #plt.clf()
+    #plt.savefig(f"charge_fit_{tsn}_{channel}_{vol}V.pdf")
+    plt.show()
+    plt.clf()
 
