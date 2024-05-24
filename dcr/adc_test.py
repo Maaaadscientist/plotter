@@ -14,7 +14,7 @@ size_marker = 100
 
 # Set global font sizes
 #plt.rcParams['text.usetex'] = False
-plt.rcParams['figure.figsize'] = (20, 15)
+plt.rcParams['figure.figsize'] = (24, 15)
 plt.rcParams['font.size'] = textsize  # Sets default font size
 plt.rcParams['axes.labelsize'] = labelsize
 plt.rcParams['axes.titlesize'] = titlesize
@@ -72,12 +72,14 @@ for idx, vol in enumerate(vol_list):
         channel_errors = errors[errors['Channel'] == f'Channel_{i}']
         #plt.errorbar(channel_data['ADC_Threshold'], channel_data['Frequency'],yerr=channel_errors['Error'], fmt='o', label=f'Channel {i}')
         print(i, cmap(idx))
-        plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'o.v. = {vol-46.5}V', color=cmap(idx))
+        plt.errorbar(channel_data['ADC_Threshold'], channel_data['Frequency'],label=f'o.v. = {vol-46.5}V', fmt='o-', color=cmap(idx))
         #plt.scatter(channel_data['ADC_Threshold'], channel_data['Frequency'], label=f'{vol}V')
 
+plt.ylim(1e-2,1e7)
 plt.xlabel('ADC Threshold')
 plt.ylabel('Rate (Hz / 144mm$^2$)')
-plt.title('Frequency over Different ADC Threshold')
+#plt.title('Frequency over Different ADC Threshold')
+plt.title(' ')
 plt.legend()
 plt.yscale('log')
 plt.grid(axis='y')
